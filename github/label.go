@@ -2,6 +2,7 @@ package github
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/google/go-github/github"
 	"golang.org/x/oauth2"
@@ -55,4 +56,42 @@ func NewSemverLabelService(owner string, repository string, token string) Semver
 			),
 		),
 	}
+}
+
+// Get find out semver version label attached to a pull request, if there is none or more than one
+// this function returns an error
+func (s SemverLabelService) Get(pullRequestNumber int) (Version, error) {
+	labels, _, err := s.client.Issues.ListLabelsByIssue(context.Background(), s.owner, s.repository, pullRequestNumber, nil)
+	if err != nil {
+		return UNVALID_VERSION, fmt.Errorf("can't fetch github api to get label for pull request #%d : %s", pullRequestNumber, err)
+	}
+
+	versions := []Version{}
+
+	for _, label := range labels {
+		switch label.GetName() {
+		case "norelease":
+			versions = append(versions, NORELEASE)
+		case "alpha":
+			versions = append(versions, ALPHA)
+		case "beta":
+			versions = append(versions, BETA)
+		case "rc":
+			versions = append(versions, RC)
+		case "patch":
+			versions = append(versions, PATCH)
+		case "minor":
+			versions = append(versions, MINOR)
+		case "major":
+			versions = append(versions, MAJOR)
+		}
+	}
+
+	if len(versions) == 0 {
+		return UNVALID_VERSION, fmt.Errorf("no semver label attached to the pull request #%d", pullRequestNumber)
+	} else if len(versions) > 1 {
+		return UNVALID_VERSION, fmt.Errorf("more than one semver label attached to the pull request #%d", pullRequestNumber)
+	}
+
+	return versions[0], nil
 }
