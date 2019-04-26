@@ -38,6 +38,8 @@ const (
 	MAJOR
 )
 
+// SemverLabelService deals with pull requests
+// to manage semver labels
 type SemverLabelService struct {
 	owner      string
 	repository string
