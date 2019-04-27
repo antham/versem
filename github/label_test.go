@@ -51,7 +51,7 @@ func TestSemverLabelServiceGetFromPullRequest(t *testing.T) {
 					)
 			},
 			func(version Version, err error) {
-				assert.EqualError(t, err, "no semver label attached to the pull request #1")
+				assert.EqualError(t, err, "pull request #1 : no semver label found")
 			},
 		},
 		{
@@ -81,7 +81,7 @@ func TestSemverLabelServiceGetFromPullRequest(t *testing.T) {
 					)
 			},
 			func(version Version, err error) {
-				assert.EqualError(t, err, "more than one semver label attached to the pull request #1")
+				assert.EqualError(t, err, "pull request #1 : more than one semver label found")
 			},
 		},
 		{

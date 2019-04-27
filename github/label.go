@@ -68,34 +68,18 @@ func (s SemverLabelService) GetFromPullRequest(pullRequestNumber int) (Version, 
 		return UNVALID_VERSION, fmt.Errorf("can't fetch github api to get label for pull request #%d : %s", pullRequestNumber, err)
 	}
 
-	versions := []Version{}
+	ls := []github.Label{}
 
-	for _, label := range labels {
-		switch label.GetName() {
-		case "norelease":
-			versions = append(versions, NORELEASE)
-		case "alpha":
-			versions = append(versions, ALPHA)
-		case "beta":
-			versions = append(versions, BETA)
-		case "rc":
-			versions = append(versions, RC)
-		case "patch":
-			versions = append(versions, PATCH)
-		case "minor":
-			versions = append(versions, MINOR)
-		case "major":
-			versions = append(versions, MAJOR)
-		}
+	for _, l := range labels {
+		ls = append(ls, *l)
 	}
 
-	if len(versions) == 0 {
-		return UNVALID_VERSION, fmt.Errorf("no semver label attached to the pull request #%d", pullRequestNumber)
-	} else if len(versions) > 1 {
-		return UNVALID_VERSION, fmt.Errorf("more than one semver label attached to the pull request #%d", pullRequestNumber)
+	version, err := extractSemverLabels(ls)
+	if err != nil {
+		return UNVALID_VERSION, fmt.Errorf("pull request #%d : %s", pullRequestNumber, err)
 	}
 
-	return versions[0], nil
+	return version, nil
 }
 
 // CreateList populates a repository with all labels needed
@@ -152,4 +136,35 @@ func (s SemverLabelService) CreateList() error {
 	}
 
 	return nil
+}
+
+func extractSemverLabels(labels []github.Label) (Version, error) {
+	versions := []Version{}
+
+	for _, label := range labels {
+		switch label.GetName() {
+		case "norelease":
+			versions = append(versions, NORELEASE)
+		case "alpha":
+			versions = append(versions, ALPHA)
+		case "beta":
+			versions = append(versions, BETA)
+		case "rc":
+			versions = append(versions, RC)
+		case "patch":
+			versions = append(versions, PATCH)
+		case "minor":
+			versions = append(versions, MINOR)
+		case "major":
+			versions = append(versions, MAJOR)
+		}
+	}
+
+	if len(versions) == 0 {
+		return UNVALID_VERSION, fmt.Errorf("no semver label found")
+	} else if len(versions) > 1 {
+		return UNVALID_VERSION, fmt.Errorf("more than one semver label found")
+	}
+
+	return versions[0], nil
 }
