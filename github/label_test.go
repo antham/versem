@@ -8,6 +8,8 @@ import (
 )
 
 func TestSemverLabelServiceGet(t *testing.T) {
+	defer gock.Off()
+
 	scenarios := []struct {
 		name  string
 		setup func()
@@ -18,6 +20,7 @@ func TestSemverLabelServiceGet(t *testing.T) {
 			func() {
 				gock.New("https://api.github.com").
 					Get("/repos/antham/versem/issues/1/labels").
+					MatchHeader("Authorization", "Bearer 396531004112aa66a7fda31bfdca7d00").
 					Reply(400).
 					JSON(
 						map[string]interface{}{
@@ -33,6 +36,7 @@ func TestSemverLabelServiceGet(t *testing.T) {
 			func() {
 				gock.New("https://api.github.com").
 					Get("/repos/antham/versem/issues/1/labels").
+					MatchHeader("Authorization", "Bearer 396531004112aa66a7fda31bfdca7d00").
 					Reply(200).
 					JSON(
 						[]map[string]interface{}{
@@ -55,6 +59,7 @@ func TestSemverLabelServiceGet(t *testing.T) {
 			func() {
 				gock.New("https://api.github.com").
 					Get("/repos/antham/versem/issues/1/labels").
+					MatchHeader("Authorization", "Bearer 396531004112aa66a7fda31bfdca7d00").
 					Reply(200).
 					JSON(
 						[]map[string]interface{}{
@@ -84,6 +89,7 @@ func TestSemverLabelServiceGet(t *testing.T) {
 			func() {
 				gock.New("https://api.github.com").
 					Get("/repos/antham/versem/issues/1/labels").
+					MatchHeader("Authorization", "Bearer 396531004112aa66a7fda31bfdca7d00").
 					Reply(200).
 					JSON(
 						[]map[string]interface{}{
@@ -114,6 +120,7 @@ func TestSemverLabelServiceGet(t *testing.T) {
 			func() {
 				gock.New("https://api.github.com").
 					Get("/repos/antham/versem/issues/1/labels").
+					MatchHeader("Authorization", "Bearer 396531004112aa66a7fda31bfdca7d00").
 					Reply(200).
 					JSON(
 						[]map[string]interface{}{
@@ -144,6 +151,7 @@ func TestSemverLabelServiceGet(t *testing.T) {
 			func() {
 				gock.New("https://api.github.com").
 					Get("/repos/antham/versem/issues/1/labels").
+					MatchHeader("Authorization", "Bearer 396531004112aa66a7fda31bfdca7d00").
 					Reply(200).
 					JSON(
 						[]map[string]interface{}{
@@ -174,6 +182,7 @@ func TestSemverLabelServiceGet(t *testing.T) {
 			func() {
 				gock.New("https://api.github.com").
 					Get("/repos/antham/versem/issues/1/labels").
+					MatchHeader("Authorization", "Bearer 396531004112aa66a7fda31bfdca7d00").
 					Reply(200).
 					JSON(
 						[]map[string]interface{}{
@@ -204,6 +213,7 @@ func TestSemverLabelServiceGet(t *testing.T) {
 			func() {
 				gock.New("https://api.github.com").
 					Get("/repos/antham/versem/issues/1/labels").
+					MatchHeader("Authorization", "Bearer 396531004112aa66a7fda31bfdca7d00").
 					Reply(200).
 					JSON(
 						[]map[string]interface{}{
@@ -234,6 +244,7 @@ func TestSemverLabelServiceGet(t *testing.T) {
 			func() {
 				gock.New("https://api.github.com").
 					Get("/repos/antham/versem/issues/1/labels").
+					MatchHeader("Authorization", "Bearer 396531004112aa66a7fda31bfdca7d00").
 					Reply(200).
 					JSON(
 						[]map[string]interface{}{
@@ -264,6 +275,7 @@ func TestSemverLabelServiceGet(t *testing.T) {
 			func() {
 				gock.New("https://api.github.com").
 					Get("/repos/antham/versem/issues/1/labels").
+					MatchHeader("Authorization", "Bearer 396531004112aa66a7fda31bfdca7d00").
 					Reply(200).
 					JSON(
 						[]map[string]interface{}{
@@ -293,10 +305,10 @@ func TestSemverLabelServiceGet(t *testing.T) {
 
 	for _, scenario := range scenarios {
 		t.Run(scenario.name, func(*testing.T) {
-			defer gock.Off()
 			scenario.setup()
 			s := NewSemverLabelService("antham", "versem", "396531004112aa66a7fda31bfdca7d00")
 			scenario.test(s.Get(1))
+			assert.True(t, gock.IsDone())
 		})
 	}
 }
