@@ -82,6 +82,29 @@ func (s SemverLabelService) GetFromPullRequest(pullRequestNumber int) (Version, 
 	return version, nil
 }
 
+// GetFromCommit find out version label attached to a commit,
+// if the commit doesn't exist or multiple exist, it returns an error,
+// if there is none or more than one this function returns an error
+func (s SemverLabelService) GetFromCommit(commitSha string) (Version, error) {
+	results, _, err := s.client.Search.Issues(context.Background(), fmt.Sprintf("%s+repo:%s/%s", commitSha, s.owner, s.repository), nil)
+	if err != nil {
+		return UNVALID_VERSION, fmt.Errorf("can't fetch github api to get label from commit %s : %s", commitSha, err)
+	}
+
+	if len(results.Issues) == 0 {
+		return UNVALID_VERSION, fmt.Errorf("commit %s not found in %s/%s", commitSha, s.owner, s.repository)
+	} else if len(results.Issues) > 1 {
+		return UNVALID_VERSION, fmt.Errorf("several entries found for commit %s in %s/%s", commitSha, s.owner, s.repository)
+	}
+
+	version, err := extractSemverLabels(results.Issues[0].Labels)
+	if err != nil {
+		return UNVALID_VERSION, fmt.Errorf("commit %s in %s/%s : %s", commitSha, s.owner, s.repository, err)
+	}
+
+	return version, nil
+}
+
 // CreateList populates a repository with all labels needed
 // to version pull requests
 func (s SemverLabelService) CreateList() error {
