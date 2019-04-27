@@ -97,3 +97,59 @@ func (s SemverLabelService) Get(pullRequestNumber int) (Version, error) {
 
 	return versions[0], nil
 }
+
+// CreateList populates a repository with all labels needed
+// to version pull requests
+func (s SemverLabelService) CreateList() error {
+	for _, label := range []struct {
+		name        string
+		color       string
+		description string
+	}{
+		{
+			"norelease",
+			"bdbdbd",
+			"Produces no new version when pull request is merged on master",
+		},
+		{
+			"alpha",
+			"d0bcd5",
+			"Produce a new alpha version according to semver when pull request is merged on master",
+		},
+		{
+			"beta",
+			"a499b3",
+			"Produce a new beta version according to semver when pull request is merged on master",
+		},
+		{
+			"rc",
+			"534b62",
+			"Produce a new rc version according to semver when pull request is merged on master",
+		},
+		{
+			"patch",
+			"0e8a16",
+			"Produce a new patch version according to semver when pull request is merged on master",
+		},
+		{
+			"minor",
+			"fbca04",
+			"Produce a new minor version according to semver when pull request is merged on master",
+		},
+		{
+			"major",
+			"d93f0b",
+			"Produce a new major version according to semver when pull request is merged on master",
+		},
+	} {
+		if _, _, err := s.client.Issues.CreateLabel(context.Background(), s.owner, s.repository, &github.Label{
+			Name:        &label.name,
+			Color:       &label.color,
+			Description: &label.description,
+		}); err != nil {
+			return fmt.Errorf("can't create label %s on repository %s : %s", label.name, s.repository, err)
+		}
+	}
+
+	return nil
+}

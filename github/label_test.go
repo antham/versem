@@ -312,3 +312,137 @@ func TestSemverLabelServiceGet(t *testing.T) {
 		})
 	}
 }
+
+func TestSemverLabelServiceCreateList(t *testing.T) {
+	defer gock.Off()
+
+	scenarios := []struct {
+		name  string
+		setup func()
+		test  func(err error)
+	}{
+		{
+			"An error occured when requesting github api",
+			func() {
+				gock.New("https://api.github.com").
+					Post("/repos/antham/versem/labels").
+					MatchHeader("Authorization", "Bearer 396531004112aa66a7fda31bfdca7d00").
+					Reply(400).
+					JSON(
+						map[string]interface{}{
+							"message": "Problems parsing JSON",
+						})
+			},
+			func(err error) {
+				assert.EqualError(t, err, "can't create label norelease on repository versem : POST https://api.github.com/repos/antham/versem/labels: 400 Problems parsing JSON []")
+			},
+		},
+		{
+			"Create all semver labels on repository",
+			func() {
+				gock.New("https://api.github.com").
+					Post("/repos/antham/versem/labels").
+					MatchHeader("Authorization", "earer 396531004112aa66a7fda31bfdca7d00").
+					MatchType("json").
+					JSON(
+						map[string]interface{}{
+							"name":        "norelease",
+							"description": "Produces no new version when pull request is merged on master",
+							"color":       "bdbdbd",
+						},
+					).
+					Reply(201)
+
+				gock.New("https://api.github.com").
+					Post("/repos/antham/versem/labels").
+					MatchHeader("Authorization", "Bearer 396531004112aa66a7fda31bfdca7d00").
+					MatchType("json").
+					JSON(
+						map[string]interface{}{
+							"name":        "alpha",
+							"description": "Produce a new alpha version according to semver when pull request is merged on master",
+							"color":       "d0bcd5",
+						},
+					).
+					Reply(201)
+
+				gock.New("https://api.github.com").
+					Post("/repos/antham/versem/labels").
+					MatchHeader("Authorization", "Bearer 396531004112aa66a7fda31bfdca7d00").
+					MatchType("json").
+					JSON(
+						map[string]string{
+							"name":        "beta",
+							"description": "Produce a new beta version according to semver when pull request is merged on master",
+							"color":       "a499b3",
+						},
+					).
+					Reply(201)
+
+				gock.New("https://api.github.com").
+					Post("/repos/antham/versem/labels").
+					MatchHeader("Authorization", "Bearer 396531004112aa66a7fda31bfdca7d00").
+					MatchType("json").
+					JSON(
+						map[string]string{
+							"name":        "rc",
+							"description": "Produce a new rc version according to semver when pull request is merged on master",
+							"color":       "534b62",
+						},
+					).
+					Reply(201)
+
+				gock.New("https://api.github.com").
+					Post("/repos/antham/versem/labels").
+					MatchHeader("Authorization", "Bearer 396531004112aa66a7fda31bfdca7d00").
+					MatchType("json").
+					JSON(
+						map[string]string{
+							"name":        "patch",
+							"description": "Produce a new patch version according to semver when pull request is merged on master",
+							"color":       "0e8a16",
+						},
+					).
+					Reply(201)
+
+				gock.New("https://api.github.com").
+					Post("/repos/antham/versem/labels").
+					MatchHeader("Authorization", "Bearer 396531004112aa66a7fda31bfdca7d00").
+					MatchType("json").
+					JSON(
+						map[string]string{
+							"name":        "minor",
+							"description": "Produce a new minor version according to semver when pull request is merged on master",
+							"color":       "fbca04",
+						},
+					).
+					Reply(201)
+
+				gock.New("https://api.github.com").
+					Post("/repos/antham/versem/labels").
+					MatchHeader("Authorization", "Bearer 396531004112aa66a7fda31bfdca7d00").
+					MatchType("json").
+					JSON(
+						map[string]string{
+							"name":        "major",
+							"description": "Produce a new major version according to semver when pull request is merged on master",
+							"color":       "d93f0b",
+						},
+					).
+					Reply(201)
+			},
+			func(err error) {
+				assert.Nil(t, err)
+			},
+		},
+	}
+
+	for _, scenario := range scenarios {
+		t.Run(scenario.name, func(*testing.T) {
+			scenario.setup()
+			s := NewSemverLabelService("antham", "versem", "396531004112aa66a7fda31bfdca7d00")
+			scenario.test(s.CreateList())
+			assert.True(t, gock.IsDone())
+		})
+	}
+}
