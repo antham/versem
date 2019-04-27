@@ -60,9 +60,9 @@ func NewSemverLabelService(owner string, repository string, token string) Semver
 	}
 }
 
-// Get find out semver version label attached to a pull request, if there is none or more than one
+// GetFromPullRequest find out semver version label attached to a pull request, if there is none or more than one
 // this function returns an error
-func (s SemverLabelService) Get(pullRequestNumber int) (Version, error) {
+func (s SemverLabelService) GetFromPullRequest(pullRequestNumber int) (Version, error) {
 	labels, _, err := s.client.Issues.ListLabelsByIssue(context.Background(), s.owner, s.repository, pullRequestNumber, nil)
 	if err != nil {
 		return UNVALID_VERSION, fmt.Errorf("can't fetch github api to get label for pull request #%d : %s", pullRequestNumber, err)

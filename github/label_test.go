@@ -7,7 +7,7 @@ import (
 	"gopkg.in/h2non/gock.v1"
 )
 
-func TestSemverLabelServiceGet(t *testing.T) {
+func TestSemverLabelServiceGetFromPullRequest(t *testing.T) {
 	defer gock.Off()
 
 	scenarios := []struct {
@@ -307,7 +307,7 @@ func TestSemverLabelServiceGet(t *testing.T) {
 		t.Run(scenario.name, func(*testing.T) {
 			scenario.setup()
 			s := NewSemverLabelService("antham", "versem", "396531004112aa66a7fda31bfdca7d00")
-			scenario.test(s.Get(1))
+			scenario.test(s.GetFromPullRequest(1))
 			assert.True(t, gock.IsDone())
 		})
 	}
