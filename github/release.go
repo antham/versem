@@ -1,7 +1,6 @@
 package github
 
 import (
-	"context"
 	"fmt"
 	"regexp"
 	"strconv"
