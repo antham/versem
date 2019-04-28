@@ -6,6 +6,40 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func TestNewTagFromString(t *testing.T) {
+	scenarios := []struct {
+		name        string
+		getArgument func() string
+		test        func(Tag, error)
+	}{
+		{
+			"Parse an unvalid semver tag : whatever",
+			func() string {
+				return "whatever"
+			},
+			func(tag Tag, err error) {
+				assert.EqualError(t, err, "whatever is not a valid semver tag")
+			},
+		},
+		{
+			"Parse a valid semver tag : 1.2.3",
+			func() string {
+				return "1.2.3"
+			},
+			func(tag Tag, err error) {
+				assert.NoError(t, err)
+				assert.Equal(t, Tag{Major: 1, Minor: 2, Patch: 3}, tag)
+			},
+		},
+	}
+
+	for _, scenario := range scenarios {
+		t.Run(scenario.name, func(*testing.T) {
+			scenario.test(NewTagFromString(scenario.getArgument()))
+		})
+	}
+}
+
 func TestParseStringTag(t *testing.T) {
 	scenarios := []struct {
 		name        string

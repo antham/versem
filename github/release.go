@@ -40,6 +40,10 @@ func (t Tag) String() string {
 	return main
 }
 
+// NewTagFromString creates a Tag instance from a tag string representation
+func NewTagFromString(tag string) (Tag, error) {
+	return parseStringTag(tag)
+}
 func getNextTag(previousTag Tag, version Version) Tag {
 	switch version {
 	case ALPHA:
