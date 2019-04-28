@@ -16,7 +16,7 @@ func TestSemverLabelServiceGetFromPullRequest(t *testing.T) {
 		test  func(version Version, err error)
 	}{
 		{
-			"An error occured when requesting github api",
+			"An error occurred when requesting github api",
 			func() {
 				gock.New("https://api.github.com").
 					Get("/repos/antham/versem/issues/1/labels").
@@ -322,7 +322,7 @@ func TestSemverLabelServiceGetFromCommitSha(t *testing.T) {
 		test  func(version Version, err error)
 	}{
 		{
-			"An error occured when requesting github api",
+			"An error occurred when requesting github api",
 			func() {
 				gock.New("https://api.github.com").
 					Get("/search/issues").
@@ -666,7 +666,7 @@ func TestSemverLabelServiceCreateList(t *testing.T) {
 		test  func(err error)
 	}{
 		{
-			"An error occured when requesting github api",
+			"An error occurred when requesting github api",
 			func() {
 				gock.New("https://api.github.com").
 					Post("/repos/antham/versem/labels").
