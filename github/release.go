@@ -37,3 +37,64 @@ func (t Tag) String() string {
 
 	return main
 }
+
+func getNextTag(previousTag Tag, version Version) Tag {
+	switch version {
+	case ALPHA:
+		var v int
+		if previousTag.Alpha != nil {
+			v = *previousTag.Alpha + 1
+		}
+
+		return Tag{
+			Major: previousTag.Major,
+			Minor: previousTag.Minor,
+			Patch: previousTag.Patch,
+			Alpha: &v,
+		}
+	case BETA:
+		var v int
+		if previousTag.Beta != nil {
+			v = *previousTag.Beta + 1
+		}
+
+		return Tag{
+			Major: previousTag.Major,
+			Minor: previousTag.Minor,
+			Patch: previousTag.Patch,
+			Beta:  &v,
+		}
+	case RC:
+		var v int
+		if previousTag.RC != nil {
+			v = *previousTag.RC + 1
+		}
+
+		return Tag{
+			Major: previousTag.Major,
+			Minor: previousTag.Minor,
+			Patch: previousTag.Patch,
+			RC:    &v,
+		}
+	case PATCH:
+		return Tag{
+			Major: previousTag.Major,
+			Minor: previousTag.Minor,
+			Patch: previousTag.Patch + 1,
+		}
+	case MINOR:
+		return Tag{
+			Major: previousTag.Major,
+			Minor: previousTag.Minor + 1,
+			Patch: 0,
+		}
+	case MAJOR:
+		return Tag{
+			Major: previousTag.Major + 1,
+			Minor: 0,
+			Patch: 0,
+		}
+	}
+
+	return Tag{}
+}
