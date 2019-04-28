@@ -3,6 +3,8 @@ package github
 import (
 	"context"
 	"fmt"
+	"regexp"
+	"strconv"
 
 )
 
@@ -97,4 +99,54 @@ func getNextTag(previousTag Tag, version Version) Tag {
 	}
 
 	return Tag{}
+}
+
+func parseStringTag(tag string) (Tag, error) {
+	semverRe := regexp.MustCompile(`^(\d+)\.(\d+)\.(\d+)(\-[0-9A-Za-z]+(?:\.[0-9A-Za-z]+)*)?(\+[0-9A-Za-z]+(?:\.[0-9A-Za-z]+)*)?$`)
+	prereleaseRe := regexp.MustCompile(`^\-(alpha|beta|rc)(?:\.(\d+))?$`)
+
+	if !semverRe.MatchString(tag) {
+		return Tag{}, fmt.Errorf("%s is not a valid semver tag", tag)
+	}
+
+	extractedTag := Tag{}
+
+	matches := semverRe.FindStringSubmatch(tag)
+
+	for i := 1; i < 4; i++ {
+		if n, err := strconv.Atoi(matches[i]); err == nil {
+			switch i {
+			case 1:
+				extractedTag.Major = n
+			case 2:
+				extractedTag.Minor = n
+			case 3:
+				extractedTag.Patch = n
+			}
+
+			continue
+		}
+
+		return Tag{}, fmt.Errorf("%s is not a valid integer", matches[i])
+	}
+
+	if len(matches) >= 5 && prereleaseRe.MatchString(matches[4]) {
+		prereleseMatches := prereleaseRe.FindStringSubmatch(matches[4])
+		var n int
+
+		if len(prereleseMatches) == 3 {
+			n, _ = strconv.Atoi(prereleseMatches[2])
+		}
+
+		switch prereleseMatches[1] {
+		case "alpha":
+			extractedTag.Alpha = &n
+		case "beta":
+			extractedTag.Beta = &n
+		case "rc":
+			extractedTag.RC = &n
+		}
+	}
+
+	return extractedTag, nil
 }

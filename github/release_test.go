@@ -6,6 +6,146 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func TestParseStringTag(t *testing.T) {
+	scenarios := []struct {
+		name        string
+		getArgument func() string
+		test        func(Tag, error)
+	}{
+		{
+			"Parse an unvalid semver tag : whatever",
+			func() string {
+				return "whatever"
+			},
+			func(tag Tag, err error) {
+				assert.EqualError(t, err, "whatever is not a valid semver tag")
+			},
+		},
+		{
+			"Parse an unvalid semver tag : 1.0",
+			func() string {
+				return "1.0"
+			},
+			func(tag Tag, err error) {
+				assert.EqualError(t, err, "1.0 is not a valid semver tag")
+			},
+		},
+		{
+			"Parse an alpha 0 tag",
+			func() string {
+				return "1.2.3-alpha"
+			},
+			func(tag Tag, err error) {
+				var zero int
+				assert.NoError(t, err)
+				assert.Equal(t, Tag{Major: 1, Minor: 2, Patch: 3, Alpha: &zero}, tag)
+			},
+		},
+		{
+			"Parse an alpha 1 tag",
+			func() string {
+				return "1.2.3-alpha.1"
+			},
+			func(tag Tag, err error) {
+				one := 1
+				assert.NoError(t, err)
+				assert.Equal(t, Tag{Major: 1, Minor: 2, Patch: 3, Alpha: &one}, tag)
+			},
+		},
+		{
+			"Parse a beta 0 tag",
+			func() string {
+				return "1.2.3-beta"
+			},
+			func(tag Tag, err error) {
+				var zero int
+				assert.NoError(t, err)
+				assert.Equal(t, Tag{Major: 1, Minor: 2, Patch: 3, Beta: &zero}, tag)
+			},
+		},
+		{
+			"Parse a beta 1 tag",
+			func() string {
+				return "1.2.3-beta.1"
+			},
+			func(tag Tag, err error) {
+				one := 1
+				assert.NoError(t, err)
+				assert.Equal(t, Tag{Major: 1, Minor: 2, Patch: 3, Beta: &one}, tag)
+			},
+		},
+		{
+			"Parse a rc 0 tag",
+			func() string {
+				return "1.2.3-rc"
+			},
+			func(tag Tag, err error) {
+				var zero int
+				assert.NoError(t, err)
+				assert.Equal(t, Tag{Major: 1, Minor: 2, Patch: 3, RC: &zero}, tag)
+			},
+		},
+		{
+			"Parse a rc 1 tag",
+			func() string {
+				return "1.2.3-rc.1"
+			},
+			func(tag Tag, err error) {
+				one := 1
+				assert.NoError(t, err)
+				assert.Equal(t, Tag{Major: 1, Minor: 2, Patch: 3, RC: &one}, tag)
+			},
+		},
+		{
+			"Parse a tag with custom prerelease",
+			func() string {
+				return "1.2.3-1.2.3"
+			},
+			func(tag Tag, err error) {
+				assert.NoError(t, err)
+				assert.Equal(t, Tag{Major: 1, Minor: 2, Patch: 3}, tag)
+			},
+		},
+		{
+			"Parse a tag with rc and build metadatas",
+			func() string {
+				return "1.2.3-rc.1+20150901.sha.5114f85"
+			},
+			func(tag Tag, err error) {
+				one := 1
+				assert.NoError(t, err)
+				assert.Equal(t, Tag{Major: 1, Minor: 2, Patch: 3, RC: &one}, tag)
+			},
+		},
+		{
+			"Parse a tag with build metadatas",
+			func() string {
+				return "1.2.3+20150901.sha.5114f85"
+			},
+			func(tag Tag, err error) {
+				assert.NoError(t, err)
+				assert.Equal(t, Tag{Major: 1, Minor: 2, Patch: 3}, tag)
+			},
+		},
+		{
+			"Parse a tag minor",
+			func() string {
+				return "1.2.3"
+			},
+			func(tag Tag, err error) {
+				assert.NoError(t, err)
+				assert.Equal(t, Tag{Major: 1, Minor: 2, Patch: 3}, tag)
+			},
+		},
+	}
+
+	for _, scenario := range scenarios {
+		t.Run(scenario.name, func(*testing.T) {
+			scenario.test(parseStringTag(scenario.getArgument()))
+		})
+	}
+}
+
 func TestTagString(t *testing.T) {
 	scenarios := []struct {
 		name        string
