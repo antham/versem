@@ -1,9 +1,13 @@
 package github
 
 import (
+	"context"
 	"fmt"
 	"regexp"
 	"strconv"
+
+	"github.com/google/go-github/github"
+	"golang.org/x/oauth2"
 )
 
 const alpha = "alpha"
@@ -42,6 +46,63 @@ func (t Tag) String() string {
 func NewTagFromString(tag string) (Tag, error) {
 	return parseStringTag(tag)
 }
+
+// ReleaseService deals with git Releases
+type ReleaseService struct {
+	owner      string
+	repository string
+	client     *github.Client
+}
+
+// NewReleaseService creates a new instance of ReleaseService
+func NewReleaseService(owner string, repository string, token string) ReleaseService {
+	return ReleaseService{
+		owner,
+		repository,
+		github.NewClient(
+			oauth2.NewClient(
+				context.Background(),
+				oauth2.StaticTokenSource(&oauth2.Token{AccessToken: token}),
+			),
+		),
+	}
+}
+
+// CreateNext release from the given version and the last semver tag
+func (r ReleaseService) CreateNext(version Version) error {
+	tags, _, err := r.client.Repositories.ListTags(context.Background(), r.owner, r.repository, &github.ListOptions{Page: 1, PerPage: 1})
+	if err != nil {
+		return fmt.Errorf("can't fetch latest tag from %s : %s", r.repository, err)
+	}
+
+	lastTag := Tag{}
+
+	if len(tags) > 0 {
+		lastTag, err = NewTagFromString(tags[0].GetName())
+		if err != nil {
+			return fmt.Errorf("can't parse tag from %s : %s", r.repository, err)
+		}
+	}
+
+	nextTag := getNextTag(lastTag, version)
+	tagStr := nextTag.String()
+	t := (nextTag.PreRelease != "")
+
+	if _, _, err = r.client.Repositories.CreateRelease(
+		context.Background(),
+		r.owner,
+		r.repository,
+		&github.RepositoryRelease{
+			TagName:    &tagStr,
+			Prerelease: &t,
+		},
+	); err != nil {
+		return fmt.Errorf("can't create release on %s : %s", r.repository, err)
+	}
+
+	return nil
+}
+
 func getNextTag(previousTag Tag, version Version) Tag {
 	nextTag := Tag{
 		LeadingV: previousTag.LeadingV,
