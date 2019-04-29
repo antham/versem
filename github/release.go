@@ -10,9 +10,9 @@ import (
 	"golang.org/x/oauth2"
 )
 
-const alpha = "alpha"
-const beta = "beta"
-const rc = "rc"
+const ALPHASTR = "alpha"
+const BETASTR = "beta"
+const RCSTR = "rc"
 
 // Tag represents a semver tag
 type Tag struct {
@@ -118,7 +118,7 @@ func getNextTag(previousTag Tag, version Version) Tag {
 			v = *previousTag.Alpha + 1
 		}
 		nextTag.Alpha = &v
-		nextTag.PreRelease = alpha
+		nextTag.PreRelease = ALPHASTR
 		if v > 0 {
 			nextTag.PreRelease = fmt.Sprintf("%s.%d", nextTag.PreRelease, v)
 		}
@@ -128,7 +128,7 @@ func getNextTag(previousTag Tag, version Version) Tag {
 			v = *previousTag.Beta + 1
 		}
 		nextTag.Beta = &v
-		nextTag.PreRelease = beta
+		nextTag.PreRelease = BETASTR
 		if v > 0 {
 			nextTag.PreRelease = fmt.Sprintf("%s.%d", nextTag.PreRelease, v)
 		}
@@ -138,7 +138,7 @@ func getNextTag(previousTag Tag, version Version) Tag {
 			v = *previousTag.RC + 1
 		}
 		nextTag.RC = &v
-		nextTag.PreRelease = rc
+		nextTag.PreRelease = RCSTR
 		if v > 0 {
 			nextTag.PreRelease = fmt.Sprintf("%s.%d", nextTag.PreRelease, v)
 		}
@@ -200,11 +200,11 @@ func parseStringTag(tag string) (Tag, error) {
 		}
 
 		switch prereleseMatches[1] {
-		case alpha:
+		case ALPHASTR:
 			extractedTag.Alpha = &n
-		case beta:
+		case BETASTR:
 			extractedTag.Beta = &n
-		case rc:
+		case RCSTR:
 			extractedTag.RC = &n
 		}
 	}
