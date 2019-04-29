@@ -8,12 +8,13 @@ import (
 
 // Tag represents a semver tag
 type Tag struct {
-	Major int
-	Minor int
-	Patch int
-	RC    *int
-	Beta  *int
-	Alpha *int
+	LeadingV bool
+	Major    int
+	Minor    int
+	Patch    int
+	RC       *int
+	Beta     *int
+	Alpha    *int
 }
 
 // String converts a Tag to its string representation
@@ -43,68 +44,50 @@ func NewTagFromString(tag string) (Tag, error) {
 	return parseStringTag(tag)
 }
 func getNextTag(previousTag Tag, version Version) Tag {
+	nextTag := Tag{
+		LeadingV: previousTag.LeadingV,
+		Major:    previousTag.Major,
+		Minor:    previousTag.Minor,
+		Patch:    previousTag.Patch,
+	}
+
 	switch version {
 	case ALPHA:
 		var v int
 		if previousTag.Alpha != nil {
 			v = *previousTag.Alpha + 1
 		}
-
-		return Tag{
-			Major: previousTag.Major,
-			Minor: previousTag.Minor,
-			Patch: previousTag.Patch,
-			Alpha: &v,
-		}
+		nextTag.Alpha = &v
 	case BETA:
 		var v int
 		if previousTag.Beta != nil {
 			v = *previousTag.Beta + 1
 		}
-
-		return Tag{
-			Major: previousTag.Major,
-			Minor: previousTag.Minor,
-			Patch: previousTag.Patch,
-			Beta:  &v,
-		}
+		nextTag.Beta = &v
 	case RC:
 		var v int
 		if previousTag.RC != nil {
 			v = *previousTag.RC + 1
 		}
-
-		return Tag{
-			Major: previousTag.Major,
-			Minor: previousTag.Minor,
-			Patch: previousTag.Patch,
-			RC:    &v,
-		}
+		nextTag.RC = &v
 	case PATCH:
-		return Tag{
-			Major: previousTag.Major,
-			Minor: previousTag.Minor,
-			Patch: previousTag.Patch + 1,
-		}
+		nextTag.Patch = previousTag.Patch + 1
 	case MINOR:
-		return Tag{
-			Major: previousTag.Major,
-			Minor: previousTag.Minor + 1,
-			Patch: 0,
-		}
+		nextTag.Minor = previousTag.Minor + 1
+		nextTag.Patch = 0
 	case MAJOR:
-		return Tag{
-			Major: previousTag.Major + 1,
-			Minor: 0,
-			Patch: 0,
-		}
+		nextTag.Major = previousTag.Major + 1
+		nextTag.Minor = 0
+		nextTag.Patch = 0
+	default:
+		return Tag{}
 	}
 
-	return Tag{}
+	return nextTag
 }
 
 func parseStringTag(tag string) (Tag, error) {
-	semverRe := regexp.MustCompile(`^(\d+)\.(\d+)\.(\d+)((?:\-[0-9A-Za-z]+(?:\.[0-9A-Za-z]+)*)?)((?:\+[0-9A-Za-z]+(?:\.[0-9A-Za-z]+)*)?)$`)
+	semverRe := regexp.MustCompile(`^(v?)(\d+)\.(\d+)\.(\d+)((?:\-[0-9A-Za-z]+(?:\.[0-9A-Za-z]+)*)?)((?:\+[0-9A-Za-z]+(?:\.[0-9A-Za-z]+)*)?)$`)
 	prereleaseRe := regexp.MustCompile(`^\-(alpha|beta|rc)(?:\.(\d+))?$`)
 
 	if !semverRe.MatchString(tag) {
@@ -115,14 +98,18 @@ func parseStringTag(tag string) (Tag, error) {
 
 	matches := semverRe.FindStringSubmatch(tag)
 
-	for i := 1; i < 4; i++ {
+	if matches[1] == "v" {
+		extractedTag.LeadingV = true
+	}
+
+	for i := 2; i < 5; i++ {
 		if n, err := strconv.Atoi(matches[i]); err == nil {
 			switch i {
-			case 1:
-				extractedTag.Major = n
 			case 2:
-				extractedTag.Minor = n
+				extractedTag.Major = n
 			case 3:
+				extractedTag.Minor = n
+			case 4:
 				extractedTag.Patch = n
 			}
 
@@ -132,8 +119,8 @@ func parseStringTag(tag string) (Tag, error) {
 		return Tag{}, fmt.Errorf("%s is not a valid integer", matches[i])
 	}
 
-	if prereleaseRe.MatchString(matches[4]) {
-		prereleseMatches := prereleaseRe.FindStringSubmatch(matches[4])
+	if prereleaseRe.MatchString(matches[5]) {
+		prereleseMatches := prereleaseRe.FindStringSubmatch(matches[5])
 		var n int
 
 		if len(prereleseMatches) == 3 {

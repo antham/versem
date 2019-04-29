@@ -172,6 +172,17 @@ func TestParseStringTag(t *testing.T) {
 				assert.Equal(t, Tag{Major: 1, Minor: 2, Patch: 3}, tag)
 			},
 		},
+		{
+			"Parse a tag with leading v",
+			func() string {
+				return "v1.2.3-rc.1"
+			},
+			func(tag Tag, err error) {
+				one := 1
+				assert.NoError(t, err)
+				assert.Equal(t, Tag{LeadingV: true, Major: 1, Minor: 2, Patch: 3, RC: &one}, tag)
+			},
+		},
 	}
 
 	for _, scenario := range scenarios {
@@ -415,6 +426,16 @@ func TestGetNextTag(t *testing.T) {
 			},
 			func(tag Tag) {
 				assert.Equal(t, Tag{Major: 2, Minor: 0, Patch: 0}, tag)
+			},
+		},
+		{
+			"Get next tag from major version and previous rc tag with a leading v",
+			func() (Tag, Version) {
+				var zero int
+				return Tag{LeadingV: true, Major: 1, Minor: 2, Patch: 3, RC: &zero}, MAJOR
+			},
+			func(tag Tag) {
+				assert.Equal(t, Tag{LeadingV: true, Major: 2, Minor: 0, Patch: 0}, tag)
 			},
 		},
 	}
