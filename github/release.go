@@ -8,32 +8,27 @@ import (
 
 // Tag represents a semver tag
 type Tag struct {
-	LeadingV bool
-	Major    int
-	Minor    int
-	Patch    int
-	RC       *int
-	Beta     *int
-	Alpha    *int
+	LeadingV      bool
+	Major         int
+	Minor         int
+	Patch         int
+	RC            *int
+	Beta          *int
+	Alpha         *int
+	PreRelease    string
+	BuildMetadata string
 }
 
 // String converts a Tag to its string representation
 func (t Tag) String() string {
 	main := fmt.Sprintf("%d.%d.%d", t.Major, t.Minor, t.Patch)
 
-	switch {
-	case t.Alpha != nil && (*t.Alpha) == 0:
-		return fmt.Sprintf("%s-alpha", main)
-	case t.Alpha != nil && (*t.Alpha) > 0:
-		return fmt.Sprintf("%s-alpha.%d", main, *t.Alpha)
-	case t.Beta != nil && (*t.Beta) == 0:
-		return fmt.Sprintf("%s-beta", main)
-	case t.Beta != nil && (*t.Beta) > 0:
-		return fmt.Sprintf("%s-beta.%d", main, *t.Beta)
-	case t.RC != nil && (*t.RC) == 0:
-		return fmt.Sprintf("%s-rc", main)
-	case t.RC != nil && (*t.RC) > 0:
-		return fmt.Sprintf("%s-rc.%d", main, *t.RC)
+	if t.PreRelease != "" {
+		main = fmt.Sprintf("%s-%s", main, t.PreRelease)
+	}
+
+	if t.BuildMetadata != "" {
+		main = fmt.Sprintf("%s+%s", main, t.BuildMetadata)
 	}
 
 	return main
@@ -58,18 +53,30 @@ func getNextTag(previousTag Tag, version Version) Tag {
 			v = *previousTag.Alpha + 1
 		}
 		nextTag.Alpha = &v
+		nextTag.PreRelease = "alpha"
+		if v > 0 {
+			nextTag.PreRelease = fmt.Sprintf("%s.%d", nextTag.PreRelease, v)
+		}
 	case BETA:
 		var v int
 		if previousTag.Beta != nil {
 			v = *previousTag.Beta + 1
 		}
 		nextTag.Beta = &v
+		nextTag.PreRelease = "beta"
+		if v > 0 {
+			nextTag.PreRelease = fmt.Sprintf("%s.%d", nextTag.PreRelease, v)
+		}
 	case RC:
 		var v int
 		if previousTag.RC != nil {
 			v = *previousTag.RC + 1
 		}
 		nextTag.RC = &v
+		nextTag.PreRelease = "rc"
+		if v > 0 {
+			nextTag.PreRelease = fmt.Sprintf("%s.%d", nextTag.PreRelease, v)
+		}
 	case PATCH:
 		nextTag.Patch = previousTag.Patch + 1
 	case MINOR:
@@ -135,6 +142,14 @@ func parseStringTag(tag string) (Tag, error) {
 		case "rc":
 			extractedTag.RC = &n
 		}
+	}
+
+	if matches[5] != "" {
+		extractedTag.PreRelease = matches[5][1:]
+	}
+
+	if matches[6] != "" {
+		extractedTag.BuildMetadata = matches[6][1:]
 	}
 
 	return extractedTag, nil

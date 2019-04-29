@@ -73,7 +73,7 @@ func TestParseStringTag(t *testing.T) {
 			func(tag Tag, err error) {
 				var zero int
 				assert.NoError(t, err)
-				assert.Equal(t, Tag{Major: 1, Minor: 2, Patch: 3, Alpha: &zero}, tag)
+				assert.Equal(t, Tag{Major: 1, Minor: 2, Patch: 3, Alpha: &zero, PreRelease: "alpha"}, tag)
 			},
 		},
 		{
@@ -84,7 +84,7 @@ func TestParseStringTag(t *testing.T) {
 			func(tag Tag, err error) {
 				one := 1
 				assert.NoError(t, err)
-				assert.Equal(t, Tag{Major: 1, Minor: 2, Patch: 3, Alpha: &one}, tag)
+				assert.Equal(t, Tag{Major: 1, Minor: 2, Patch: 3, Alpha: &one, PreRelease: "alpha.1"}, tag)
 			},
 		},
 		{
@@ -95,7 +95,7 @@ func TestParseStringTag(t *testing.T) {
 			func(tag Tag, err error) {
 				var zero int
 				assert.NoError(t, err)
-				assert.Equal(t, Tag{Major: 1, Minor: 2, Patch: 3, Beta: &zero}, tag)
+				assert.Equal(t, Tag{Major: 1, Minor: 2, Patch: 3, Beta: &zero, PreRelease: "beta"}, tag)
 			},
 		},
 		{
@@ -106,7 +106,7 @@ func TestParseStringTag(t *testing.T) {
 			func(tag Tag, err error) {
 				one := 1
 				assert.NoError(t, err)
-				assert.Equal(t, Tag{Major: 1, Minor: 2, Patch: 3, Beta: &one}, tag)
+				assert.Equal(t, Tag{Major: 1, Minor: 2, Patch: 3, Beta: &one, PreRelease: "beta.1"}, tag)
 			},
 		},
 		{
@@ -117,7 +117,7 @@ func TestParseStringTag(t *testing.T) {
 			func(tag Tag, err error) {
 				var zero int
 				assert.NoError(t, err)
-				assert.Equal(t, Tag{Major: 1, Minor: 2, Patch: 3, RC: &zero}, tag)
+				assert.Equal(t, Tag{Major: 1, Minor: 2, Patch: 3, RC: &zero, PreRelease: "rc"}, tag)
 			},
 		},
 		{
@@ -128,7 +128,7 @@ func TestParseStringTag(t *testing.T) {
 			func(tag Tag, err error) {
 				one := 1
 				assert.NoError(t, err)
-				assert.Equal(t, Tag{Major: 1, Minor: 2, Patch: 3, RC: &one}, tag)
+				assert.Equal(t, Tag{Major: 1, Minor: 2, Patch: 3, RC: &one, PreRelease: "rc.1"}, tag)
 			},
 		},
 		{
@@ -138,7 +138,7 @@ func TestParseStringTag(t *testing.T) {
 			},
 			func(tag Tag, err error) {
 				assert.NoError(t, err)
-				assert.Equal(t, Tag{Major: 1, Minor: 2, Patch: 3}, tag)
+				assert.Equal(t, Tag{Major: 1, Minor: 2, Patch: 3, PreRelease: "1.2.3"}, tag)
 			},
 		},
 		{
@@ -149,7 +149,7 @@ func TestParseStringTag(t *testing.T) {
 			func(tag Tag, err error) {
 				one := 1
 				assert.NoError(t, err)
-				assert.Equal(t, Tag{Major: 1, Minor: 2, Patch: 3, RC: &one}, tag)
+				assert.Equal(t, Tag{Major: 1, Minor: 2, Patch: 3, RC: &one, PreRelease: "rc.1", BuildMetadata: "20150901.sha.5114f85"}, tag)
 			},
 		},
 		{
@@ -159,7 +159,7 @@ func TestParseStringTag(t *testing.T) {
 			},
 			func(tag Tag, err error) {
 				assert.NoError(t, err)
-				assert.Equal(t, Tag{Major: 1, Minor: 2, Patch: 3}, tag)
+				assert.Equal(t, Tag{Major: 1, Minor: 2, Patch: 3, BuildMetadata: "20150901.sha.5114f85"}, tag)
 			},
 		},
 		{
@@ -180,7 +180,7 @@ func TestParseStringTag(t *testing.T) {
 			func(tag Tag, err error) {
 				one := 1
 				assert.NoError(t, err)
-				assert.Equal(t, Tag{LeadingV: true, Major: 1, Minor: 2, Patch: 3, RC: &one}, tag)
+				assert.Equal(t, Tag{LeadingV: true, Major: 1, Minor: 2, Patch: 3, RC: &one, PreRelease: "rc.1"}, tag)
 			},
 		},
 	}
@@ -203,7 +203,7 @@ func TestTagString(t *testing.T) {
 			"Print alpha tag version 0",
 			func() Tag {
 				var zero int
-				return Tag{Major: 1, Minor: 2, Patch: 3, Alpha: &zero}
+				return Tag{Major: 1, Minor: 2, Patch: 3, Alpha: &zero, PreRelease: "alpha"}
 			},
 			func(tag string) {
 				assert.Equal(t, "1.2.3-alpha", tag)
@@ -213,7 +213,7 @@ func TestTagString(t *testing.T) {
 			"Print alpha tag version 1",
 			func() Tag {
 				one := 1
-				return Tag{Major: 1, Minor: 2, Patch: 3, Alpha: &one}
+				return Tag{Major: 1, Minor: 2, Patch: 3, Alpha: &one, PreRelease: "alpha.1"}
 			},
 			func(tag string) {
 				assert.Equal(t, "1.2.3-alpha.1", tag)
@@ -223,7 +223,7 @@ func TestTagString(t *testing.T) {
 			"Print beta tag version 0",
 			func() Tag {
 				var zero int
-				return Tag{Major: 1, Minor: 2, Patch: 3, Beta: &zero}
+				return Tag{Major: 1, Minor: 2, Patch: 3, Beta: &zero, PreRelease: "beta"}
 			},
 			func(tag string) {
 				assert.Equal(t, "1.2.3-beta", tag)
@@ -233,7 +233,7 @@ func TestTagString(t *testing.T) {
 			"Print beta tag version 1",
 			func() Tag {
 				one := 1
-				return Tag{Major: 1, Minor: 2, Patch: 3, Beta: &one}
+				return Tag{Major: 1, Minor: 2, Patch: 3, Beta: &one, PreRelease: "beta.1"}
 			},
 			func(tag string) {
 				assert.Equal(t, "1.2.3-beta.1", tag)
@@ -243,7 +243,7 @@ func TestTagString(t *testing.T) {
 			"Print rc tag version 0",
 			func() Tag {
 				var zero int
-				return Tag{Major: 1, Minor: 2, Patch: 3, RC: &zero}
+				return Tag{Major: 1, Minor: 2, Patch: 3, RC: &zero, PreRelease: "rc"}
 			},
 			func(tag string) {
 				assert.Equal(t, "1.2.3-rc", tag)
@@ -253,7 +253,7 @@ func TestTagString(t *testing.T) {
 			"Print rc tag version 1",
 			func() Tag {
 				one := 1
-				return Tag{Major: 1, Minor: 2, Patch: 3, RC: &one}
+				return Tag{Major: 1, Minor: 2, Patch: 3, RC: &one, PreRelease: "rc.1"}
 			},
 			func(tag string) {
 				assert.Equal(t, "1.2.3-rc.1", tag)
@@ -282,18 +282,18 @@ func TestGetNextTag(t *testing.T) {
 			},
 			func(tag Tag) {
 				var zero int
-				assert.Equal(t, Tag{Major: 1, Minor: 2, Patch: 3, Alpha: &zero}, tag)
+				assert.Equal(t, Tag{Major: 1, Minor: 2, Patch: 3, Alpha: &zero, PreRelease: "alpha"}, tag)
 			},
 		},
 		{
 			"Get next tag from alpha version and previous alpha tag",
 			func() (Tag, Version) {
 				var zero int
-				return Tag{Major: 1, Minor: 2, Patch: 3, Alpha: &zero}, ALPHA
+				return Tag{Major: 1, Minor: 2, Patch: 3, Alpha: &zero, PreRelease: "alpha"}, ALPHA
 			},
 			func(tag Tag) {
 				var one = 1
-				assert.Equal(t, Tag{Major: 1, Minor: 2, Patch: 3, Alpha: &one}, tag)
+				assert.Equal(t, Tag{Major: 1, Minor: 2, Patch: 3, Alpha: &one, PreRelease: "alpha.1"}, tag)
 			},
 		},
 		{
@@ -303,18 +303,18 @@ func TestGetNextTag(t *testing.T) {
 			},
 			func(tag Tag) {
 				var zero int
-				assert.Equal(t, Tag{Major: 1, Minor: 2, Patch: 3, Beta: &zero}, tag)
+				assert.Equal(t, Tag{Major: 1, Minor: 2, Patch: 3, Beta: &zero, PreRelease: "beta"}, tag)
 			},
 		},
 		{
 			"Get next tag from beta version and previous beta tag",
 			func() (Tag, Version) {
 				var zero int
-				return Tag{Major: 1, Minor: 2, Patch: 3, Beta: &zero}, BETA
+				return Tag{Major: 1, Minor: 2, Patch: 3, Beta: &zero, PreRelease: "beta"}, BETA
 			},
 			func(tag Tag) {
 				var one = 1
-				assert.Equal(t, Tag{Major: 1, Minor: 2, Patch: 3, Beta: &one}, tag)
+				assert.Equal(t, Tag{Major: 1, Minor: 2, Patch: 3, Beta: &one, PreRelease: "beta.1"}, tag)
 			},
 		},
 		{
@@ -324,25 +324,25 @@ func TestGetNextTag(t *testing.T) {
 			},
 			func(tag Tag) {
 				var zero int
-				assert.Equal(t, Tag{Major: 1, Minor: 2, Patch: 3, RC: &zero}, tag)
+				assert.Equal(t, Tag{Major: 1, Minor: 2, Patch: 3, RC: &zero, PreRelease: "rc"}, tag)
 			},
 		},
 		{
 			"Get next tag from rc version and previous rc tag",
 			func() (Tag, Version) {
 				var zero int
-				return Tag{Major: 1, Minor: 2, Patch: 3, RC: &zero}, RC
+				return Tag{Major: 1, Minor: 2, Patch: 3, RC: &zero, PreRelease: "rc"}, RC
 			},
 			func(tag Tag) {
 				var one = 1
-				assert.Equal(t, Tag{Major: 1, Minor: 2, Patch: 3, RC: &one}, tag)
+				assert.Equal(t, Tag{Major: 1, Minor: 2, Patch: 3, RC: &one, PreRelease: "rc.1"}, tag)
 			},
 		},
 		{
 			"Get next tag from patch version and previous alpha tag",
 			func() (Tag, Version) {
 				var zero int
-				return Tag{Major: 1, Minor: 2, Patch: 3, Alpha: &zero}, PATCH
+				return Tag{Major: 1, Minor: 2, Patch: 3, Alpha: &zero, PreRelease: "alpha"}, PATCH
 			},
 			func(tag Tag) {
 				assert.Equal(t, Tag{Major: 1, Minor: 2, Patch: 4}, tag)
@@ -352,7 +352,7 @@ func TestGetNextTag(t *testing.T) {
 			"Get next tag from patch version and previous beta tag",
 			func() (Tag, Version) {
 				var zero int
-				return Tag{Major: 1, Minor: 2, Patch: 3, Beta: &zero}, PATCH
+				return Tag{Major: 1, Minor: 2, Patch: 3, Beta: &zero, PreRelease: "beta"}, PATCH
 			},
 			func(tag Tag) {
 				assert.Equal(t, Tag{Major: 1, Minor: 2, Patch: 4}, tag)
@@ -362,7 +362,7 @@ func TestGetNextTag(t *testing.T) {
 			"Get next tag from patch version and previous rc tag",
 			func() (Tag, Version) {
 				var zero int
-				return Tag{Major: 1, Minor: 2, Patch: 3, RC: &zero}, PATCH
+				return Tag{Major: 1, Minor: 2, Patch: 3, RC: &zero, PreRelease: "rc"}, PATCH
 			},
 			func(tag Tag) {
 				assert.Equal(t, Tag{Major: 1, Minor: 2, Patch: 4}, tag)
@@ -372,7 +372,7 @@ func TestGetNextTag(t *testing.T) {
 			"Get next tag from minor version and previous alpha tag",
 			func() (Tag, Version) {
 				var zero int
-				return Tag{Major: 1, Minor: 2, Patch: 3, Alpha: &zero}, MINOR
+				return Tag{Major: 1, Minor: 2, Patch: 3, Alpha: &zero, PreRelease: "alpha"}, MINOR
 			},
 			func(tag Tag) {
 				assert.Equal(t, Tag{Major: 1, Minor: 3, Patch: 0}, tag)
@@ -382,7 +382,7 @@ func TestGetNextTag(t *testing.T) {
 			"Get next tag from minor version and previous beta tag",
 			func() (Tag, Version) {
 				var zero int
-				return Tag{Major: 1, Minor: 2, Patch: 3, Beta: &zero}, MINOR
+				return Tag{Major: 1, Minor: 2, Patch: 3, Beta: &zero, PreRelease: "beta"}, MINOR
 			},
 			func(tag Tag) {
 				assert.Equal(t, Tag{Major: 1, Minor: 3, Patch: 0}, tag)
@@ -392,7 +392,7 @@ func TestGetNextTag(t *testing.T) {
 			"Get next tag from minor version and previous rc tag",
 			func() (Tag, Version) {
 				var zero int
-				return Tag{Major: 1, Minor: 2, Patch: 3, RC: &zero}, MINOR
+				return Tag{Major: 1, Minor: 2, Patch: 3, RC: &zero, PreRelease: "rc"}, MINOR
 			},
 			func(tag Tag) {
 				assert.Equal(t, Tag{Major: 1, Minor: 3, Patch: 0}, tag)
@@ -402,7 +402,7 @@ func TestGetNextTag(t *testing.T) {
 			"Get next tag from major version and previous alpha tag",
 			func() (Tag, Version) {
 				var zero int
-				return Tag{Major: 1, Minor: 2, Patch: 3, Alpha: &zero}, MAJOR
+				return Tag{Major: 1, Minor: 2, Patch: 3, Alpha: &zero, PreRelease: "alpha"}, MAJOR
 			},
 			func(tag Tag) {
 				assert.Equal(t, Tag{Major: 2, Minor: 0, Patch: 0}, tag)
@@ -412,7 +412,7 @@ func TestGetNextTag(t *testing.T) {
 			"Get next tag from major version and previous beta tag",
 			func() (Tag, Version) {
 				var zero int
-				return Tag{Major: 1, Minor: 2, Patch: 3, Beta: &zero}, MAJOR
+				return Tag{Major: 1, Minor: 2, Patch: 3, Beta: &zero, PreRelease: "beta"}, MAJOR
 			},
 			func(tag Tag) {
 				assert.Equal(t, Tag{Major: 2, Minor: 0, Patch: 0}, tag)
@@ -422,7 +422,7 @@ func TestGetNextTag(t *testing.T) {
 			"Get next tag from major version and previous rc tag",
 			func() (Tag, Version) {
 				var zero int
-				return Tag{Major: 1, Minor: 2, Patch: 3, RC: &zero}, MAJOR
+				return Tag{Major: 1, Minor: 2, Patch: 3, RC: &zero, PreRelease: "rc"}, MAJOR
 			},
 			func(tag Tag) {
 				assert.Equal(t, Tag{Major: 2, Minor: 0, Patch: 0}, tag)
@@ -432,7 +432,7 @@ func TestGetNextTag(t *testing.T) {
 			"Get next tag from major version and previous rc tag with a leading v",
 			func() (Tag, Version) {
 				var zero int
-				return Tag{LeadingV: true, Major: 1, Minor: 2, Patch: 3, RC: &zero}, MAJOR
+				return Tag{LeadingV: true, Major: 1, Minor: 2, Patch: 3, RC: &zero, PreRelease: "rc"}, MAJOR
 			},
 			func(tag Tag) {
 				assert.Equal(t, Tag{LeadingV: true, Major: 2, Minor: 0, Patch: 0}, tag)
