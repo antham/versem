@@ -6,7 +6,7 @@ fmt:
 	find ! -path "./vendor/*" -name "*.go" -exec gofmt -s -w {} \;
 
 lint:
-	golang-ci run
+	golangci-lint run
 
 run-tests:
 	./test.sh
