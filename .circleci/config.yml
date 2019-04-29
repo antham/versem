@@ -8,6 +8,9 @@ jobs:
       BASH_ENV: /home/circleci/.bashrc
     steps:
       - checkout
+      - restore_cache:
+          keys:
+            - v1-pkg-cache
       - run:
           name: Install gox
           command: |
@@ -29,6 +32,10 @@ jobs:
           name: Run tests
           command: |
             make test-all
+      - save_cache:
+          key: v1-pkg-cache
+          paths:
+            - "/go/pkg"
       - run:
           name: Push on codecov result
           command: |
