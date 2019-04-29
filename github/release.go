@@ -6,6 +6,10 @@ import (
 	"strconv"
 )
 
+const alpha = "alpha"
+const beta = "beta"
+const rc = "rc"
+
 // Tag represents a semver tag
 type Tag struct {
 	LeadingV      bool
@@ -53,7 +57,7 @@ func getNextTag(previousTag Tag, version Version) Tag {
 			v = *previousTag.Alpha + 1
 		}
 		nextTag.Alpha = &v
-		nextTag.PreRelease = "alpha"
+		nextTag.PreRelease = alpha
 		if v > 0 {
 			nextTag.PreRelease = fmt.Sprintf("%s.%d", nextTag.PreRelease, v)
 		}
@@ -63,7 +67,7 @@ func getNextTag(previousTag Tag, version Version) Tag {
 			v = *previousTag.Beta + 1
 		}
 		nextTag.Beta = &v
-		nextTag.PreRelease = "beta"
+		nextTag.PreRelease = beta
 		if v > 0 {
 			nextTag.PreRelease = fmt.Sprintf("%s.%d", nextTag.PreRelease, v)
 		}
@@ -73,7 +77,7 @@ func getNextTag(previousTag Tag, version Version) Tag {
 			v = *previousTag.RC + 1
 		}
 		nextTag.RC = &v
-		nextTag.PreRelease = "rc"
+		nextTag.PreRelease = rc
 		if v > 0 {
 			nextTag.PreRelease = fmt.Sprintf("%s.%d", nextTag.PreRelease, v)
 		}
@@ -135,11 +139,11 @@ func parseStringTag(tag string) (Tag, error) {
 		}
 
 		switch prereleseMatches[1] {
-		case "alpha":
+		case alpha:
 			extractedTag.Alpha = &n
-		case "beta":
+		case beta:
 			extractedTag.Beta = &n
-		case "rc":
+		case rc:
 			extractedTag.RC = &n
 		}
 	}
