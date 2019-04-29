@@ -5,7 +5,10 @@ compile:
 fmt:
 	find ! -path "./vendor/*" -name "*.go" -exec gofmt -s -w {} \;
 
+lint:
+	golang-ci run
+
 run-tests:
 	./test.sh
 
-test-all: run-tests
+test-all: run-tests lint

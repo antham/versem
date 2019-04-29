@@ -13,6 +13,10 @@ jobs:
           command: |
             go get github.com/mitchellh/gox
       - run:
+          name: Install golang-ci
+          command: |
+            go get -u github.com/golangci/golangci-lint/cmd/golangci-lint
+      - run:
           name: Install vendors
           command: |
             export GO111MODULE=on

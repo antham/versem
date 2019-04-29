@@ -1,0 +1,16 @@
+linters:
+  enable:
+    - interfacer
+    - goconst
+    - gocritic
+    - gocyclo
+    - gofmt
+    - gosec
+    - maligned
+    - misspell
+    - nakedret
+    - prealloc
+    - scopelint
+    - stylecheck
+    - unconvert
+    - unparam
