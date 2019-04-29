@@ -20,8 +20,8 @@ type Version int
 
 //go:generate stringer -type=Version
 const (
-	// UNVALID_VERSION is default when no semver version exists
-	UNVALID_VERSION Version = iota
+	// UNVALIDVERSION is default when no semver version exists
+	UNVALIDVERSION Version = iota
 	// NORELEASE represents for instance 1.0.0-rc
 	NORELEASE
 	// ALPHA represents for instance 1.0.0-alpha
@@ -65,7 +65,7 @@ func NewSemverLabelService(owner string, repository string, token string) Semver
 func (s SemverLabelService) GetFromPullRequest(pullRequestNumber int) (Version, error) {
 	labels, _, err := s.client.Issues.ListLabelsByIssue(context.Background(), s.owner, s.repository, pullRequestNumber, nil)
 	if err != nil {
-		return UNVALID_VERSION, fmt.Errorf("can't fetch github api to get label for pull request #%d : %s", pullRequestNumber, err)
+		return UNVALIDVERSION, fmt.Errorf("can't fetch github api to get label for pull request #%d : %s", pullRequestNumber, err)
 	}
 
 	ls := []github.Label{}
@@ -76,7 +76,7 @@ func (s SemverLabelService) GetFromPullRequest(pullRequestNumber int) (Version, 
 
 	version, err := extractSemverLabels(ls)
 	if err != nil {
-		return UNVALID_VERSION, fmt.Errorf("pull request #%d : %s", pullRequestNumber, err)
+		return UNVALIDVERSION, fmt.Errorf("pull request #%d : %s", pullRequestNumber, err)
 	}
 
 	return version, nil
@@ -88,18 +88,18 @@ func (s SemverLabelService) GetFromPullRequest(pullRequestNumber int) (Version, 
 func (s SemverLabelService) GetFromCommit(commitSha string) (Version, error) {
 	results, _, err := s.client.Search.Issues(context.Background(), fmt.Sprintf("%s+repo:%s/%s", commitSha, s.owner, s.repository), nil)
 	if err != nil {
-		return UNVALID_VERSION, fmt.Errorf("can't fetch github api to get label from commit %s : %s", commitSha, err)
+		return UNVALIDVERSION, fmt.Errorf("can't fetch github api to get label from commit %s : %s", commitSha, err)
 	}
 
 	if len(results.Issues) == 0 {
-		return UNVALID_VERSION, fmt.Errorf("commit %s not found in %s/%s", commitSha, s.owner, s.repository)
+		return UNVALIDVERSION, fmt.Errorf("commit %s not found in %s/%s", commitSha, s.owner, s.repository)
 	} else if len(results.Issues) > 1 {
-		return UNVALID_VERSION, fmt.Errorf("several entries found for commit %s in %s/%s", commitSha, s.owner, s.repository)
+		return UNVALIDVERSION, fmt.Errorf("several entries found for commit %s in %s/%s", commitSha, s.owner, s.repository)
 	}
 
 	version, err := extractSemverLabels(results.Issues[0].Labels)
 	if err != nil {
-		return UNVALID_VERSION, fmt.Errorf("commit %s in %s/%s : %s", commitSha, s.owner, s.repository, err)
+		return UNVALIDVERSION, fmt.Errorf("commit %s in %s/%s : %s", commitSha, s.owner, s.repository, err)
 	}
 
 	return version, nil
@@ -184,9 +184,9 @@ func extractSemverLabels(labels []github.Label) (Version, error) {
 	}
 
 	if len(versions) == 0 {
-		return UNVALID_VERSION, fmt.Errorf("no semver label found")
+		return UNVALIDVERSION, fmt.Errorf("no semver label found")
 	} else if len(versions) > 1 {
-		return UNVALID_VERSION, fmt.Errorf("more than one semver label found")
+		return UNVALIDVERSION, fmt.Errorf("more than one semver label found")
 	}
 
 	return versions[0], nil
