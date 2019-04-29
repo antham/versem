@@ -304,6 +304,7 @@ func TestSemverLabelServiceGetFromPullRequest(t *testing.T) {
 	}
 
 	for _, scenario := range scenarios {
+		scenario := scenario
 		t.Run(scenario.name, func(*testing.T) {
 			scenario.setup()
 			s := NewSemverLabelService("antham", "versem", "396531004112aa66a7fda31bfdca7d00")
@@ -648,6 +649,7 @@ func TestSemverLabelServiceGetFromCommitSha(t *testing.T) {
 	}
 
 	for _, scenario := range scenarios {
+		scenario := scenario
 		t.Run(scenario.name, func(*testing.T) {
 			scenario.setup()
 			s := NewSemverLabelService("antham", "versem", "396531004112aa66a7fda31bfdca7d00")
@@ -782,6 +784,7 @@ func TestSemverLabelServiceCreateList(t *testing.T) {
 	}
 
 	for _, scenario := range scenarios {
+		scenario := scenario
 		t.Run(scenario.name, func(*testing.T) {
 			scenario.setup()
 			s := NewSemverLabelService("antham", "versem", "396531004112aa66a7fda31bfdca7d00")

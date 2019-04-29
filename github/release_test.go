@@ -34,6 +34,7 @@ func TestNewTagFromString(t *testing.T) {
 	}
 
 	for _, scenario := range scenarios {
+		scenario := scenario
 		t.Run(scenario.name, func(*testing.T) {
 			scenario.test(NewTagFromString(scenario.getArgument()))
 		})
@@ -174,6 +175,7 @@ func TestParseStringTag(t *testing.T) {
 	}
 
 	for _, scenario := range scenarios {
+		scenario := scenario
 		t.Run(scenario.name, func(*testing.T) {
 			scenario.test(parseStringTag(scenario.getArgument()))
 		})
@@ -249,6 +251,7 @@ func TestTagString(t *testing.T) {
 	}
 
 	for _, scenario := range scenarios {
+		scenario := scenario
 		t.Run(scenario.name, func(*testing.T) {
 			scenario.test(scenario.getArgument().String())
 		})
@@ -417,6 +420,7 @@ func TestGetNextTag(t *testing.T) {
 	}
 
 	for _, scenario := range scenarios {
+		scenario := scenario
 		t.Run(scenario.name, func(*testing.T) {
 			scenario.test(getNextTag(scenario.getArguments()))
 		})
