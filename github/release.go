@@ -20,7 +20,7 @@ type Tag struct {
 func (t Tag) String() string {
 	main := fmt.Sprintf("%d.%d.%d", t.Major, t.Minor, t.Patch)
 
-	switch true {
+	switch {
 	case t.Alpha != nil && (*t.Alpha) == 0:
 		return fmt.Sprintf("%s-alpha", main)
 	case t.Alpha != nil && (*t.Alpha) > 0:
