@@ -104,7 +104,7 @@ func getNextTag(previousTag Tag, version Version) Tag {
 }
 
 func parseStringTag(tag string) (Tag, error) {
-	semverRe := regexp.MustCompile(`^(\d+)\.(\d+)\.(\d+)(\-[0-9A-Za-z]+(?:\.[0-9A-Za-z]+)*)?(\+[0-9A-Za-z]+(?:\.[0-9A-Za-z]+)*)?$`)
+	semverRe := regexp.MustCompile(`^(\d+)\.(\d+)\.(\d+)((?:\-[0-9A-Za-z]+(?:\.[0-9A-Za-z]+)*)?)((?:\+[0-9A-Za-z]+(?:\.[0-9A-Za-z]+)*)?)$`)
 	prereleaseRe := regexp.MustCompile(`^\-(alpha|beta|rc)(?:\.(\d+))?$`)
 
 	if !semverRe.MatchString(tag) {
@@ -132,7 +132,7 @@ func parseStringTag(tag string) (Tag, error) {
 		return Tag{}, fmt.Errorf("%s is not a valid integer", matches[i])
 	}
 
-	if len(matches) >= 5 && prereleaseRe.MatchString(matches[4]) {
+	if prereleaseRe.MatchString(matches[4]) {
 		prereleseMatches := prereleaseRe.FindStringSubmatch(matches[4])
 		var n int
 
