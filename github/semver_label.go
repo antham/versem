@@ -24,7 +24,7 @@ type Version int
 const (
 	// UNVALIDVERSION is default when no semver version exists
 	UNVALIDVERSION Version = iota
-	// NORELEASE represents for instance 1.0.0-rc
+	// NORELEASE don't create any release
 	NORELEASE
 	// PATCH represents for instance 0.0.1
 	PATCH
