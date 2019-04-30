@@ -285,6 +285,38 @@ func TestReleaseCreateNext(t *testing.T) {
 			},
 		},
 		{
+			"Tag fetched is not a valid semver tag",
+			func() {
+				gock.New("https://api.github.com").
+					Get("/repos/antham/versem/tags").
+					MatchParams(
+						map[string]string{
+							"page":     "1",
+							"per_page": "1",
+						},
+					).
+					MatchHeader("Authorization", "Bearer 396531004112aa66a7fda31bfdca7d00").
+					Reply(200).
+					JSON([]map[string]interface{}{
+						{
+							"name": "120",
+							"commit": map[string]interface{}{
+								"sha": "c5b97d5ae6c19d5c5df71a34c7fbeeda2479ccbc",
+								"url": "https://api.github.com/repos/antham/versem/commits/c5b97d5ae6c19d5c5df71a34c7fbeeda2479ccbc",
+							},
+							"zipball_url": "https://github.com/antham/versem/zipball/120",
+							"tarball_url": "https://github.com/antham/versem/tarball/120",
+						},
+					})
+			},
+			func() Version {
+				return MAJOR
+			},
+			func(err error) {
+				assert.EqualError(t, err, "can't parse tag from versem : 120 is not a valid semver tag")
+			},
+		},
+		{
 			"Create a new release",
 			func() {
 				gock.New("https://api.github.com").
