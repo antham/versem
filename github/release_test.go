@@ -243,7 +243,7 @@ func TestReleaseCreateNext(t *testing.T) {
 				return MAJOR
 			},
 			func(err error) {
-				assert.EqualError(t, err, "can't fetch latest tag from versem : GET https://api.github.com/repos/antham/versem/tags?page=1&per_page=1: 500 An error occurred []")
+				assert.EqualError(t, err, "can't fetch latest tag from antham/versem : GET https://api.github.com/repos/antham/versem/tags?page=1&per_page=1: 500 An error occurred []")
 			},
 		},
 		{
@@ -281,7 +281,7 @@ func TestReleaseCreateNext(t *testing.T) {
 				return MAJOR
 			},
 			func(err error) {
-				assert.EqualError(t, err, "can't create release on versem : POST https://api.github.com/repos/antham/versem/releases: 500 An error occurred []")
+				assert.EqualError(t, err, "can't create release on antham/versem : POST https://api.github.com/repos/antham/versem/releases: 500 An error occurred []")
 			},
 		},
 		{
@@ -313,7 +313,7 @@ func TestReleaseCreateNext(t *testing.T) {
 				return MAJOR
 			},
 			func(err error) {
-				assert.EqualError(t, err, "can't parse tag from versem : 120 is not a valid semver tag")
+				assert.EqualError(t, err, "can't parse tag from antham/versem : 120 is not a valid semver tag")
 			},
 		},
 		{

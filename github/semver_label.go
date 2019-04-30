@@ -61,7 +61,7 @@ func NewSemverLabelService(owner string, repository string, token string) Semver
 func (s SemverLabelService) GetFromPullRequest(pullRequestNumber int) (Version, error) {
 	labels, _, err := s.client.Issues.ListLabelsByIssue(context.Background(), s.owner, s.repository, pullRequestNumber, nil)
 	if err != nil {
-		return UNVALIDVERSION, fmt.Errorf("can't fetch github api to get label for pull request #%d : %s", pullRequestNumber, err)
+		return UNVALIDVERSION, fmt.Errorf("can't fetch github api to get label for pull request #%d in %s/%s : %s", pullRequestNumber, s.owner, s.repository, err)
 	}
 
 	ls := []github.Label{}
@@ -72,7 +72,7 @@ func (s SemverLabelService) GetFromPullRequest(pullRequestNumber int) (Version, 
 
 	version, err := extractSemverLabels(ls)
 	if err != nil {
-		return UNVALIDVERSION, fmt.Errorf("pull request #%d : %s", pullRequestNumber, err)
+		return UNVALIDVERSION, fmt.Errorf("pull request #%d in %s/%s : %s", pullRequestNumber, s.owner, s.repository, err)
 	}
 
 	return version, nil
@@ -84,7 +84,7 @@ func (s SemverLabelService) GetFromPullRequest(pullRequestNumber int) (Version, 
 func (s SemverLabelService) GetFromCommit(commitSha string) (Version, error) {
 	results, _, err := s.client.Search.Issues(context.Background(), fmt.Sprintf("%s+repo:%s/%s", commitSha, s.owner, s.repository), nil)
 	if err != nil {
-		return UNVALIDVERSION, fmt.Errorf("can't fetch github api to get label from commit %s : %s", commitSha, err)
+		return UNVALIDVERSION, fmt.Errorf("can't fetch github api to get label from commit %s in %s/%s : %s", commitSha, s.owner, s.repository, err)
 	}
 
 	if len(results.Issues) == 0 {
@@ -135,7 +135,7 @@ func (s SemverLabelService) CreateList() error {
 			Color:       &label.color,
 			Description: &label.description,
 		}); err != nil {
-			return fmt.Errorf("can't create label %s on repository %s : %s", label.name, s.repository, err)
+			return fmt.Errorf("can't create label %s on %s/%s : %s", label.name, s.owner, s.repository, err)
 		}
 	}
 
