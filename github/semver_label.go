@@ -8,14 +8,16 @@ import (
 	"golang.org/x/oauth2"
 )
 
+const noreleaseStr = "norelease"
+const patchStr = "patch"
+const minorStr = "minor"
+const majorStr = "major"
+
 // Version represents a semver version
-// NORELEASE => no version
-// PATCH     => 0.0.1
-// MINOR     => 0.1.0
-// MAJOR     => 1.0.0
-// ALPHA     => 1.0.0-alpha
-// BETA      => 1.0.0-beta
-// RC        => 1.0.0-rc
+// NORELEASE  => no version
+// PATCH      => 0.0.1
+// MINOR      => 0.1.0
+// MAJOR      => 1.0.0
 type Version int
 
 //go:generate stringer -type=Version
@@ -24,12 +26,6 @@ const (
 	UNVALIDVERSION Version = iota
 	// NORELEASE represents for instance 1.0.0-rc
 	NORELEASE
-	// ALPHA represents for instance 1.0.0-alpha
-	ALPHA
-	// BETA represents for instance 1.0.0-beta
-	BETA
-	// RC represents for instance 1.0.0-rc
-	RC
 	// PATCH represents for instance 0.0.1
 	PATCH
 	// MINOR represents for instance 0.1.0
@@ -114,39 +110,24 @@ func (s SemverLabelService) CreateList() error {
 		description string
 	}{
 		{
-			"norelease",
+			noreleaseStr,
 			"bdbdbd",
 			"Produces no new version when pull request is merged on master",
 		},
 		{
-			"alpha",
-			"d0bcd5",
-			"Produce a new alpha version according to semver when pull request is merged on master",
-		},
-		{
-			"beta",
-			"a499b3",
-			"Produce a new beta version according to semver when pull request is merged on master",
-		},
-		{
-			"rc",
-			"534b62",
-			"Produce a new rc version according to semver when pull request is merged on master",
-		},
-		{
-			"patch",
+			patchStr,
 			"0e8a16",
-			"Produce a new patch version according to semver when pull request is merged on master",
+			"Produce a new semver patch version when pull request is merged on master",
 		},
 		{
-			"minor",
+			minorStr,
 			"fbca04",
-			"Produce a new minor version according to semver when pull request is merged on master",
+			"Produce a new semver minor version when pull request is merged on master",
 		},
 		{
-			"major",
+			majorStr,
 			"d93f0b",
-			"Produce a new major version according to semver when pull request is merged on master",
+			"Produce a new semver major version when pull request is merged on master",
 		},
 	} {
 		if _, _, err := s.client.Issues.CreateLabel(context.Background(), s.owner, s.repository, &github.Label{
@@ -166,19 +147,13 @@ func extractSemverLabels(labels []github.Label) (Version, error) {
 
 	for _, label := range labels {
 		switch label.GetName() {
-		case "norelease":
+		case noreleaseStr:
 			versions = append(versions, NORELEASE)
-		case "alpha":
-			versions = append(versions, ALPHA)
-		case "beta":
-			versions = append(versions, BETA)
-		case "rc":
-			versions = append(versions, RC)
-		case "patch":
+		case patchStr:
 			versions = append(versions, PATCH)
-		case "minor":
+		case minorStr:
 			versions = append(versions, MINOR)
-		case "major":
+		case majorStr:
 			versions = append(versions, MAJOR)
 		}
 	}

@@ -10,17 +10,14 @@ func _() {
 	var x [1]struct{}
 	_ = x[UNVALIDVERSION-0]
 	_ = x[NORELEASE-1]
-	_ = x[ALPHA-2]
-	_ = x[BETA-3]
-	_ = x[RC-4]
-	_ = x[PATCH-5]
-	_ = x[MINOR-6]
-	_ = x[MAJOR-7]
+	_ = x[PATCH-2]
+	_ = x[MINOR-3]
+	_ = x[MAJOR-4]
 }
 
-const _Version_name = "UNVALIDVERSIONNORELEASEALPHABETARCPATCHMINORMAJOR"
+const _Version_name = "UNVALIDVERSIONNORELEASEPATCHMINORMAJOR"
 
-var _Version_index = [...]uint8{0, 14, 23, 28, 32, 34, 39, 44, 49}
+var _Version_index = [...]uint8{0, 14, 23, 28, 33, 38}
 
 func (i Version) String() string {
 	if i < 0 || i >= Version(len(_Version_index)-1) {

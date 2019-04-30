@@ -10,19 +10,12 @@ import (
 	"golang.org/x/oauth2"
 )
 
-const ALPHASTR = "alpha"
-const BETASTR = "beta"
-const RCSTR = "rc"
-
 // Tag represents a semver tag
 type Tag struct {
 	LeadingV      bool
 	Major         int
 	Minor         int
 	Patch         int
-	RC            *int
-	Beta          *int
-	Alpha         *int
 	PreRelease    string
 	BuildMetadata string
 }
@@ -112,36 +105,6 @@ func getNextTag(previousTag Tag, version Version) Tag {
 	}
 
 	switch version {
-	case ALPHA:
-		var v int
-		if previousTag.Alpha != nil {
-			v = *previousTag.Alpha + 1
-		}
-		nextTag.Alpha = &v
-		nextTag.PreRelease = ALPHASTR
-		if v > 0 {
-			nextTag.PreRelease = fmt.Sprintf("%s.%d", nextTag.PreRelease, v)
-		}
-	case BETA:
-		var v int
-		if previousTag.Beta != nil {
-			v = *previousTag.Beta + 1
-		}
-		nextTag.Beta = &v
-		nextTag.PreRelease = BETASTR
-		if v > 0 {
-			nextTag.PreRelease = fmt.Sprintf("%s.%d", nextTag.PreRelease, v)
-		}
-	case RC:
-		var v int
-		if previousTag.RC != nil {
-			v = *previousTag.RC + 1
-		}
-		nextTag.RC = &v
-		nextTag.PreRelease = RCSTR
-		if v > 0 {
-			nextTag.PreRelease = fmt.Sprintf("%s.%d", nextTag.PreRelease, v)
-		}
 	case PATCH:
 		nextTag.Patch = previousTag.Patch + 1
 	case MINOR:
@@ -151,8 +114,6 @@ func getNextTag(previousTag Tag, version Version) Tag {
 		nextTag.Major = previousTag.Major + 1
 		nextTag.Minor = 0
 		nextTag.Patch = 0
-	default:
-		return Tag{}
 	}
 
 	return nextTag
@@ -160,7 +121,6 @@ func getNextTag(previousTag Tag, version Version) Tag {
 
 func parseStringTag(tag string) (Tag, error) {
 	semverRe := regexp.MustCompile(`^(v?)(\d+)\.(\d+)\.(\d+)((?:\-[0-9A-Za-z]+(?:\.[0-9A-Za-z]+)*)?)((?:\+[0-9A-Za-z]+(?:\.[0-9A-Za-z]+)*)?)$`)
-	prereleaseRe := regexp.MustCompile(`^\-(alpha|beta|rc)(?:\.(\d+))?$`)
 
 	if !semverRe.MatchString(tag) {
 		return Tag{}, fmt.Errorf("%s is not a valid semver tag", tag)
@@ -189,24 +149,6 @@ func parseStringTag(tag string) (Tag, error) {
 		}
 
 		return Tag{}, fmt.Errorf("%s is not a valid integer", matches[i])
-	}
-
-	if prereleaseRe.MatchString(matches[5]) {
-		prereleseMatches := prereleaseRe.FindStringSubmatch(matches[5])
-		var n int
-
-		if len(prereleseMatches) == 3 {
-			n, _ = strconv.Atoi(prereleseMatches[2])
-		}
-
-		switch prereleseMatches[1] {
-		case ALPHASTR:
-			extractedTag.Alpha = &n
-		case BETASTR:
-			extractedTag.Beta = &n
-		case RCSTR:
-			extractedTag.RC = &n
-		}
 	}
 
 	if matches[5] != "" {
