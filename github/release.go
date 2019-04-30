@@ -144,11 +144,7 @@ func parseStringTag(tag string) (Tag, error) {
 			case 4:
 				extractedTag.Patch = n
 			}
-
-			continue
 		}
-
-		return Tag{}, fmt.Errorf("%s is not a valid integer", matches[i])
 	}
 
 	if matches[5] != "" {
