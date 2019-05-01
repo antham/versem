@@ -4,9 +4,31 @@ import (
 	"os"
 	"testing"
 
+	"github.com/antham/versem/github"
 	"github.com/spf13/viper"
 	"github.com/stretchr/testify/assert"
 )
+
+type semverServiceMock struct {
+	version         github.Version
+	err             error
+	methodCallCount map[string]int
+}
+
+func (s semverServiceMock) GetFromPullRequest(int) (github.Version, error) {
+	s.methodCallCount["GetFromPullRequest"]++
+	return s.version, s.err
+}
+
+func (s semverServiceMock) GetFromCommit(string) (github.Version, error) {
+	s.methodCallCount["GetFromCommit"]++
+	return s.version, s.err
+}
+
+func (s semverServiceMock) CreateList() error {
+	s.methodCallCount["CreateList"]++
+	return s.err
+}
 
 func TestGetCredentials(t *testing.T) {
 	os.Setenv("GITHUB_OWNER", "antham")
