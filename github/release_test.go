@@ -142,6 +142,15 @@ func TestTagString(t *testing.T) {
 			},
 		},
 		{
+			"Print tag with leading v",
+			func() Tag {
+				return Tag{LeadingV: true, Major: 1, Minor: 2, Patch: 3}
+			},
+			func(tag string) {
+				assert.Equal(t, "v1.2.3", tag)
+			},
+		},
+		{
 			"Print tag with prerelease",
 			func() Tag {
 				return Tag{Major: 1, Minor: 2, Patch: 3, PreRelease: "rc.1"}

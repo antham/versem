@@ -24,6 +24,10 @@ type Tag struct {
 func (t Tag) String() string {
 	main := fmt.Sprintf("%d.%d.%d", t.Major, t.Minor, t.Patch)
 
+	if t.LeadingV {
+		main = "v" + main
+	}
+
 	if t.PreRelease != "" {
 		main = fmt.Sprintf("%s-%s", main, t.PreRelease)
 	}
