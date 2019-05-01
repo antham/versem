@@ -222,13 +222,14 @@ func TestGetNextTag(t *testing.T) {
 }
 
 func TestReleaseCreateNext(t *testing.T) {
+	const master = "master"
 	defer gock.Off()
 
 	scenarios := []struct {
-		name        string
-		setup       func()
-		getArgument func() Version
-		test        func(tag Tag, err error)
+		name         string
+		setup        func()
+		getArguments func() (Version, string)
+		test         func(tag Tag, err error)
 	}{
 		{
 			"An error occurred when fetching last tag from github api",
@@ -248,8 +249,8 @@ func TestReleaseCreateNext(t *testing.T) {
 							"message": "An error occurred",
 						})
 			},
-			func() Version {
-				return MAJOR
+			func() (Version, string) {
+				return MAJOR, master
 			},
 			func(tag Tag, err error) {
 				assert.EqualError(t, err, "can't fetch latest tag from antham/versem : GET https://api.github.com/repos/antham/versem/tags?page=1&per_page=1: 500 An error occurred []")
@@ -275,8 +276,9 @@ func TestReleaseCreateNext(t *testing.T) {
 					MatchType("json").
 					JSON(
 						map[string]interface{}{
-							"tag_name":   "1.0.0",
-							"prerelease": false,
+							"tag_name":         "1.0.0",
+							"prerelease":       false,
+							"target_commitish": master,
 						},
 					).
 					MatchHeader("Authorization", "Bearer 396531004112aa66a7fda31bfdca7d00").
@@ -286,8 +288,8 @@ func TestReleaseCreateNext(t *testing.T) {
 							"message": "An error occurred",
 						})
 			},
-			func() Version {
-				return MAJOR
+			func() (Version, string) {
+				return MAJOR, master
 			},
 			func(tag Tag, err error) {
 				assert.EqualError(t, err, "can't create release on antham/versem : POST https://api.github.com/repos/antham/versem/releases: 500 An error occurred []")
@@ -318,8 +320,8 @@ func TestReleaseCreateNext(t *testing.T) {
 						},
 					})
 			},
-			func() Version {
-				return MAJOR
+			func() (Version, string) {
+				return MAJOR, master
 			},
 			func(tag Tag, err error) {
 				assert.EqualError(t, err, "can't parse tag from antham/versem : 120 is not a valid semver tag")
@@ -355,8 +357,9 @@ func TestReleaseCreateNext(t *testing.T) {
 					MatchType("json").
 					JSON(
 						map[string]interface{}{
-							"tag_name":   "2.0.0",
-							"prerelease": false,
+							"tag_name":         "2.0.0",
+							"prerelease":       false,
+							"target_commitish": master,
 						},
 					).
 					MatchHeader("Authorization", "Bearer 396531004112aa66a7fda31bfdca7d00").
@@ -372,7 +375,7 @@ func TestReleaseCreateNext(t *testing.T) {
 							"id":               1,
 							"node_id":          "MDc6UmVsZWFzZTE=",
 							"tag_name":         "2.0.0",
-							"target_commitish": "master",
+							"target_commitish": master,
 							"name":             "2.0.0",
 							"body":             "Description of the release",
 							"draft":            false,
@@ -402,8 +405,8 @@ func TestReleaseCreateNext(t *testing.T) {
 							"assets": []string{},
 						})
 			},
-			func() Version {
-				return MAJOR
+			func() (Version, string) {
+				return MAJOR, master
 			},
 			func(tag Tag, err error) {
 				assert.NoError(t, err)
@@ -431,8 +434,9 @@ func TestReleaseCreateNext(t *testing.T) {
 					MatchType("json").
 					JSON(
 						map[string]interface{}{
-							"tag_name":   "1.0.0",
-							"prerelease": false,
+							"tag_name":         "1.0.0",
+							"prerelease":       false,
+							"target_commitish": master,
 						},
 					).
 					MatchHeader("Authorization", "Bearer 396531004112aa66a7fda31bfdca7d00").
@@ -448,7 +452,7 @@ func TestReleaseCreateNext(t *testing.T) {
 							"id":               1,
 							"node_id":          "MDc6UmVsZWFzZTE=",
 							"tag_name":         "1.0.0",
-							"target_commitish": "master",
+							"target_commitish": master,
 							"name":             "1.0.0",
 							"body":             "Description of the release",
 							"draft":            false,
@@ -478,8 +482,8 @@ func TestReleaseCreateNext(t *testing.T) {
 							"assets": []string{},
 						})
 			},
-			func() Version {
-				return MAJOR
+			func() (Version, string) {
+				return MAJOR, master
 			},
 			func(tag Tag, err error) {
 				assert.NoError(t, err)
@@ -493,7 +497,7 @@ func TestReleaseCreateNext(t *testing.T) {
 		t.Run(scenario.name, func(*testing.T) {
 			scenario.setup()
 			s := NewReleaseService("antham", "versem", "396531004112aa66a7fda31bfdca7d00")
-			scenario.test(s.CreateNext(scenario.getArgument()))
+			scenario.test(s.CreateNext(scenario.getArguments()))
 			assert.True(t, gock.IsDone())
 		})
 	}

@@ -65,8 +65,8 @@ func NewReleaseService(owner string, repository string, token string) ReleaseSer
 	}
 }
 
-// CreateNext release from the given version and the last semver tag
-func (r ReleaseService) CreateNext(version Version) (Tag, error) {
+// CreateNext release from the given version and the last semver tag at target commitish
+func (r ReleaseService) CreateNext(version Version, targetCommitish string) (Tag, error) {
 	tags, _, err := r.client.Repositories.ListTags(context.Background(), r.owner, r.repository, &github.ListOptions{Page: 1, PerPage: 1})
 	if err != nil {
 		return Tag{}, fmt.Errorf("can't fetch latest tag from %s/%s : %s", r.owner, r.repository, err)
@@ -90,8 +90,9 @@ func (r ReleaseService) CreateNext(version Version) (Tag, error) {
 		r.owner,
 		r.repository,
 		&github.RepositoryRelease{
-			TagName:    &tagStr,
-			Prerelease: &t,
+			TagName:         &tagStr,
+			Prerelease:      &t,
+			TargetCommitish: &targetCommitish,
 		},
 	); err != nil {
 		return Tag{}, fmt.Errorf("can't create release on %s/%s : %s", r.owner, r.repository, err)
