@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"github.com/antham/versem/github"
 	"regexp"
 
 	"github.com/spf13/cobra"
@@ -31,6 +32,11 @@ func releaseCreate(msgHandler messageHandler, semverService semverService, relea
 	version, err := semverService.GetFromCommit(args[0])
 	if err != nil {
 		msgHandler.errorFatal(err)
+	}
+
+	if version == github.NORELEASE {
+		msgHandler.success("label norelease found, skip tag creation")
+		return
 	}
 
 	tag, err := releaseService.CreateNext(version, args[0])

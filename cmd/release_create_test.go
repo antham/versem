@@ -92,6 +92,23 @@ func TestReleaseCreate(t *testing.T) {
 				assert.Equal(t, 1, releaseServiceMethodCallCount["CreateNext"])
 			},
 		},
+		{
+			"Skip tag creation on norelease version",
+			[]string{"a1b2c3d4e5"},
+			func() semverService {
+				return semverServiceMock{methodCallCount: map[string]int{}, version: github.NORELEASE}
+			},
+			func() releaseService {
+				return releaseServiceMock{methodCallCount: map[string]int{}, tag: github.Tag{Major: 1}}
+			},
+			func(exitCode int, stdout bytes.Buffer, stderr bytes.Buffer, semverServiceMethodCallCount map[string]int, releaseServiceMethodCallCount map[string]int) {
+				assert.Equal(t, 0, exitCode)
+				assert.Equal(t, "label norelease found, skip tag creation\n", stdout.String())
+				assert.Len(t, semverServiceMethodCallCount, 1)
+				assert.Equal(t, 1, semverServiceMethodCallCount["GetFromCommit"])
+				assert.Len(t, releaseServiceMethodCallCount, 0)
+			},
+		},
 	}
 
 	for _, scenario := range scenarios {
