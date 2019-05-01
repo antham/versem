@@ -119,6 +119,7 @@ func TestCheck(t *testing.T) {
 	}
 
 	for _, scenario := range scenarios {
+		scenario := scenario
 		t.Run(scenario.name, func(*testing.T) {
 
 			var code int
