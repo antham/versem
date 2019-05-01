@@ -31,7 +31,6 @@ func getCredentials() (owner string, repository string, token string) {
 	} {
 		*s.ptr = viper.GetString(s.name)
 	}
-
 	return
 }
 
