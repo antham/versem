@@ -5,6 +5,7 @@ import (
 	"github.com/spf13/viper"
 )
 
+/* #nosec */
 const githubToken = "GITHUB_TOKEN"
 const githubOwner = "GITHUB_OWNER"
 const githubRepository = "GITHUB_REPOSITORY"
