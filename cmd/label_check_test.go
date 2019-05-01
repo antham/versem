@@ -12,7 +12,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func TestCheck(t *testing.T) {
+func TestLabelCheck(t *testing.T) {
 	type scenario struct {
 		name             string
 		getSemverService func() semverService
