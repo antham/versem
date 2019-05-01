@@ -148,7 +148,7 @@ func TestCheck(t *testing.T) {
 					w.Done()
 				}()
 
-				check(msgHandler, semverService, &cobra.Command{}, scenario.getArgument())
+				labelCheck(msgHandler, semverService, &cobra.Command{}, scenario.getArgument())
 			}()
 
 			w.Wait()

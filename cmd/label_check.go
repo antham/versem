@@ -11,24 +11,24 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var checkCmd = &cobra.Command{
+var labelCheckCmd = &cobra.Command{
 	Use:   "check [commitSha|pullRequestId]",
 	Short: "Ensure a pull request contains a semver label",
-	Run:   setupCheckCmdFunc(check),
+	Run:   setupLabelCheckCmdFunc(labelCheck),
 }
 
 func init() {
-	labelCmd.AddCommand(checkCmd)
+	labelCmd.AddCommand(labelCheckCmd)
 }
 
-func setupCheckCmdFunc(f func(messageHandler, semverService, *cobra.Command, []string)) func(*cobra.Command, []string) {
+func setupLabelCheckCmdFunc(f func(messageHandler, semverService, *cobra.Command, []string)) func(*cobra.Command, []string) {
 	return func(cmd *cobra.Command, args []string) {
 		msgHandler := newMessageHandler()
 		f(msgHandler, getSemverLabelService(), cmd, args)
 	}
 }
 
-func check(msgHandler messageHandler, semverService semverService, cmd *cobra.Command, args []string) {
+func labelCheck(msgHandler messageHandler, semverService semverService, cmd *cobra.Command, args []string) {
 	if len(args) != 1 {
 		msgHandler.errorFatalStr("provide a pull request number or commit sha as first argument")
 	}
