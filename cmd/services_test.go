@@ -30,6 +30,17 @@ func (s semverServiceMock) CreateList() error {
 	return s.err
 }
 
+type releaseServiceMock struct {
+	tag             github.Tag
+	err             error
+	methodCallCount map[string]int
+}
+
+func (r releaseServiceMock) CreateNext(version github.Version, targetCommitish string) (github.Tag, error) {
+	r.methodCallCount["CreateNext"]++
+	return r.tag, r.err
+}
+
 func TestGetCredentials(t *testing.T) {
 	os.Setenv("GITHUB_OWNER", "antham")
 	os.Setenv("GITHUB_REPOSITORY", "versem")

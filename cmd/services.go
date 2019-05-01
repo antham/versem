@@ -11,6 +11,10 @@ type semverService interface {
 	CreateList() error
 }
 
+type releaseService interface {
+	CreateNext(github.Version, string) (github.Tag, error)
+}
+
 func getCredentials() (owner string, repository string, token string) {
 	for _, s := range []struct {
 		name string
@@ -36,4 +40,8 @@ func getCredentials() (owner string, repository string, token string) {
 
 func getSemverLabelService() github.SemverLabelService {
 	return github.NewSemverLabelService(getCredentials())
+}
+
+func getReleaseService() github.ReleaseService {
+	return github.NewReleaseService(getCredentials())
 }
