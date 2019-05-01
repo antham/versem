@@ -1,12 +1,13 @@
 package cmd
 
 import (
-	"fmt"
-	"os"
-
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
+
+const githubToken = "GITHUB_TOKEN"
+const githubOwner = "GITHUB_OWNER"
+const githubRepository = "GITHUB_REPOSITORY"
 
 var rootCmd = &cobra.Command{
 	Use:   "versem",
@@ -17,15 +18,25 @@ var rootCmd = &cobra.Command{
 // This is called by main.main(). It only needs to happen once to the rootCmd.
 func Execute() {
 	if err := rootCmd.Execute(); err != nil {
-		fmt.Println(err)
-		os.Exit(1)
+		newMessageHandler().errorFatal(err)
 	}
 }
 
 func init() {
-	cobra.OnInitialize(initConfig)
+	cobra.OnInitialize(initConfig(newMessageHandler()))
 }
 
-func initConfig() {
-	viper.AutomaticEnv()
+func initConfig(msgHandler messageHandler) func() {
+	return func() {
+		viper.AutomaticEnv()
+		for _, key := range []string{
+			githubOwner,
+			githubRepository,
+			githubToken,
+		} {
+			if !viper.IsSet(key) {
+				msgHandler.errorFatalStr("missing environment variable : %s", key)
+			}
+		}
+	}
 }
