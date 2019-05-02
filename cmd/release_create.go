@@ -1,8 +1,9 @@
 package cmd
 
 import (
-	"github.com/antham/versem/github"
 	"regexp"
+
+	"github.com/antham/versem/github"
 
 	"github.com/spf13/cobra"
 )
@@ -31,7 +32,8 @@ func releaseCreate(msgHandler messageHandler, semverService semverService, relea
 
 	version, err := semverService.GetFromCommit(args[0])
 	if err != nil {
-		msgHandler.errorFatal(err)
+		msgHandler.error(err)
+		return
 	}
 
 	if version == github.NORELEASE {
@@ -41,8 +43,7 @@ func releaseCreate(msgHandler messageHandler, semverService semverService, relea
 
 	tag, err := releaseService.CreateNext(version, args[0])
 	if err != nil {
-		msgHandler.error(err)
-		return
+		msgHandler.errorFatal(err)
 	}
 
 	msgHandler.success("tag %s created", tag)
