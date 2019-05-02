@@ -30,14 +30,14 @@ func setupLabelCheckCmdFunc(f func(messageHandler, semverService, *cobra.Command
 
 func labelCheck(msgHandler messageHandler, semverService semverService, cmd *cobra.Command, args []string) {
 	if len(args) != 1 {
-		msgHandler.errorFatalStr("provide a pull request number or commit sha as first argument")
+		msgHandler.errorFatalStr("provide a pull request number or full commit sha as first argument")
 	}
 
 	var version github.Version
 	var err error
 
 	switch {
-	case regexp.MustCompile("[0-9a-f]{7,}").MatchString(args[0]):
+	case regexp.MustCompile("[0-9a-f]{40}").MatchString(args[0]):
 		version, err = semverService.GetFromCommit(args[0])
 	case regexp.MustCompile("[0-9]+").MatchString(args[0]):
 		n, _ := strconv.Atoi(args[0])

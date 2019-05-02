@@ -31,7 +31,7 @@ func TestLabelCheck(t *testing.T) {
 			},
 			func(exitCode int, stdout bytes.Buffer, stderr bytes.Buffer, methodCallCount map[string]int) {
 				assert.Equal(t, 1, exitCode)
-				assert.Equal(t, "provide a pull request number or commit sha as first argument\n", stderr.String())
+				assert.Equal(t, "provide a pull request number or full commit sha as first argument\n", stderr.String())
 				assert.Len(t, methodCallCount, 0)
 			},
 		},
@@ -55,7 +55,7 @@ func TestLabelCheck(t *testing.T) {
 				return semverServiceMock{err: fmt.Errorf("failure occurred when calling fetching label from commit"), methodCallCount: map[string]int{}}
 			},
 			func() []string {
-				return []string{"a1b2c3d4"}
+				return []string{"8a5ed8235d18fb0243493b82baf5d988459d24db"}
 			},
 			func(exitCode int, stdout bytes.Buffer, stderr bytes.Buffer, methodCallCount map[string]int) {
 				assert.Equal(t, 1, exitCode)
