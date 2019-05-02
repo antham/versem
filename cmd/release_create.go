@@ -8,7 +8,7 @@ import (
 )
 
 var releaseCreateCmd = &cobra.Command{
-	Use:   "create",
+	Use:   "create [commitSha]",
 	Short: "Create semver release on a repository",
 	Run:   setupReleaseCreateCmdFunc(releaseCreate),
 }

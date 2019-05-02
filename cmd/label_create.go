@@ -6,7 +6,7 @@ import (
 
 var labelCreateCmd = &cobra.Command{
 	Use:   "create",
-	Short: "Create semver label on a repository",
+	Short: "Create semver labels on a repository",
 	Run:   setupLabelCreateCmdFunc(labelCreate),
 }
 
