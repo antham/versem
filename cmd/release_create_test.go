@@ -34,14 +34,14 @@ func TestReleaseCreate(t *testing.T) {
 			},
 			func(exitCode int, stdout bytes.Buffer, stderr bytes.Buffer, semverServiceMethodCallCount map[string]int, releaseServiceMethodCallCount map[string]int) {
 				assert.Equal(t, 1, exitCode)
-				assert.Equal(t, "provide a commit sha as first argument\n", stderr.String())
+				assert.Equal(t, "provide a full commit sha as first argument\n", stderr.String())
 				assert.Len(t, semverServiceMethodCallCount, 0)
 				assert.Len(t, releaseServiceMethodCallCount, 0)
 			},
 		},
 		{
 			"Failure occurred when fetching label",
-			[]string{"a1b2c3d4e5"},
+			[]string{"8a5ed8235d18fb0243493b82baf5d988459d24db"},
 			func() semverService {
 				return semverServiceMock{err: fmt.Errorf("failure occurred when fetching label"), methodCallCount: map[string]int{}}
 			},
@@ -58,7 +58,7 @@ func TestReleaseCreate(t *testing.T) {
 		},
 		{
 			"Failure occurred when creating release",
-			[]string{"a1b2c3d4e5"},
+			[]string{"8a5ed8235d18fb0243493b82baf5d988459d24db"},
 			func() semverService {
 				return semverServiceMock{methodCallCount: map[string]int{}}
 			},
@@ -76,7 +76,7 @@ func TestReleaseCreate(t *testing.T) {
 		},
 		{
 			"Create release",
-			[]string{"a1b2c3d4e5"},
+			[]string{"8a5ed8235d18fb0243493b82baf5d988459d24db"},
 			func() semverService {
 				return semverServiceMock{methodCallCount: map[string]int{}}
 			},
@@ -94,7 +94,7 @@ func TestReleaseCreate(t *testing.T) {
 		},
 		{
 			"Skip tag creation on norelease version",
-			[]string{"a1b2c3d4e5"},
+			[]string{"8a5ed8235d18fb0243493b82baf5d988459d24db"},
 			func() semverService {
 				return semverServiceMock{methodCallCount: map[string]int{}, version: github.NORELEASE}
 			},
