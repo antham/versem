@@ -45,7 +45,7 @@ func TestLabelCheck(t *testing.T) {
 			},
 			func(exitCode int, stdout bytes.Buffer, stderr bytes.Buffer, methodCallCount map[string]int) {
 				assert.Equal(t, 1, exitCode)
-				assert.Equal(t, "analysis failed, test is not a valid number, nor a valid commit sha\n", stderr.String())
+				assert.Equal(t, "test is not a valid number, nor a valid commit sha\n", stderr.String())
 				assert.Len(t, methodCallCount, 0)
 			},
 		},
@@ -59,7 +59,7 @@ func TestLabelCheck(t *testing.T) {
 			},
 			func(exitCode int, stdout bytes.Buffer, stderr bytes.Buffer, methodCallCount map[string]int) {
 				assert.Equal(t, 1, exitCode)
-				assert.Equal(t, "analysis failed, failure occurred when calling fetching label from commit\n", stderr.String())
+				assert.Equal(t, "failure occurred when calling fetching label from commit\n", stderr.String())
 				assert.Len(t, methodCallCount, 1)
 				assert.Equal(t, 1, methodCallCount["GetFromCommit"])
 			},
@@ -74,7 +74,7 @@ func TestLabelCheck(t *testing.T) {
 			},
 			func(exitCode int, stdout bytes.Buffer, stderr bytes.Buffer, methodCallCount map[string]int) {
 				assert.Equal(t, 1, exitCode)
-				assert.Equal(t, "analysis failed, failure occurred when calling fetching label from pull request\n", stderr.String())
+				assert.Equal(t, "failure occurred when calling fetching label from pull request\n", stderr.String())
 				assert.Len(t, methodCallCount, 1)
 				assert.Equal(t, 1, methodCallCount["GetFromPullRequest"])
 			},

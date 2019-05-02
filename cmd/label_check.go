@@ -47,7 +47,7 @@ func labelCheck(msgHandler messageHandler, semverService semverService, cmd *cob
 	}
 
 	if err != nil {
-		msgHandler.errorFatalStr(fmt.Sprintf("analysis failed, %s", err))
+		msgHandler.errorFatal(err)
 	}
 
 	msgHandler.success("%s semver version found", strings.ToLower(version.String()))

@@ -29,7 +29,7 @@ func TestSemverLabelServiceGetFromPullRequest(t *testing.T) {
 						})
 			},
 			func(version Version, err error) {
-				assert.EqualError(t, err, "can't fetch github api to get label for pull request #1 in antham/versem : GET https://api.github.com/repos/antham/versem/issues/1/labels: 400 Problems parsing JSON []")
+				assert.EqualError(t, err, "can't fetch github api to get label for pull request #1 : GET https://api.github.com/repos/antham/versem/issues/1/labels: 400 Problems parsing JSON []")
 			},
 		},
 		{
@@ -52,7 +52,7 @@ func TestSemverLabelServiceGetFromPullRequest(t *testing.T) {
 					)
 			},
 			func(version Version, err error) {
-				assert.EqualError(t, err, "pull request #1 in antham/versem : no semver label found")
+				assert.EqualError(t, err, "an error occurred when parsing version from pull request #1 : no semver label found")
 			},
 		},
 		{
@@ -82,7 +82,7 @@ func TestSemverLabelServiceGetFromPullRequest(t *testing.T) {
 					)
 			},
 			func(version Version, err error) {
-				assert.EqualError(t, err, "pull request #1 in antham/versem : more than one semver label found")
+				assert.EqualError(t, err, "an error occurred when parsing version from pull request #1 : more than one semver label found")
 			},
 		},
 		{
@@ -244,7 +244,7 @@ func TestSemverLabelServiceGetFromCommitSha(t *testing.T) {
 						})
 			},
 			func(version Version, err error) {
-				assert.EqualError(t, err, "can't fetch github api to get label from commit a6e6c8b8c34d2382e591587e960e7e7f825cb221 in antham/versem : GET https://api.github.com/search/issues?q=a6e6c8b8c34d2382e591587e960e7e7f825cb221+repo:antham%2Fversem: 400 Problems parsing JSON []")
+				assert.EqualError(t, err, "can't fetch github api to get label from commit a6e6c8b8c34d2382e591587e960e7e7f825cb221 : GET https://api.github.com/search/issues?q=a6e6c8b8c34d2382e591587e960e7e7f825cb221+repo:antham%2Fversem: 400 Problems parsing JSON []")
 			},
 		},
 		{
@@ -264,7 +264,7 @@ func TestSemverLabelServiceGetFromCommitSha(t *testing.T) {
 					)
 			},
 			func(version Version, err error) {
-				assert.EqualError(t, err, "commit a6e6c8b8c34d2382e591587e960e7e7f825cb221 not found in antham/versem")
+				assert.EqualError(t, err, "commit a6e6c8b8c34d2382e591587e960e7e7f825cb221 not found")
 			},
 		},
 		{
@@ -393,7 +393,7 @@ func TestSemverLabelServiceGetFromCommitSha(t *testing.T) {
 					)
 			},
 			func(version Version, err error) {
-				assert.EqualError(t, err, "several entries found for commit a6e6c8b8c34d2382e591587e960e7e7f825cb221 in antham/versem")
+				assert.EqualError(t, err, "several entries found for commit a6e6c8b8c34d2382e591587e960e7e7f825cb221")
 			},
 		},
 		{
@@ -475,7 +475,7 @@ func TestSemverLabelServiceGetFromCommitSha(t *testing.T) {
 					)
 			},
 			func(version Version, err error) {
-				assert.EqualError(t, err, "commit a6e6c8b8c34d2382e591587e960e7e7f825cb221 in antham/versem : more than one semver label found")
+				assert.EqualError(t, err, "an error occurred when parsing version from commit a6e6c8b8c34d2382e591587e960e7e7f825cb221 : more than one semver label found")
 			},
 		},
 		{
@@ -588,7 +588,7 @@ func TestSemverLabelServiceCreateList(t *testing.T) {
 						})
 			},
 			func(err error) {
-				assert.EqualError(t, err, "can't create label norelease on antham/versem : POST https://api.github.com/repos/antham/versem/labels: 400 Problems parsing JSON []")
+				assert.EqualError(t, err, "can't create label norelease : POST https://api.github.com/repos/antham/versem/labels: 400 Problems parsing JSON []")
 			},
 		},
 		{
