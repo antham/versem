@@ -41,7 +41,8 @@ func releaseCreate(msgHandler messageHandler, semverService semverService, relea
 
 	tag, err := releaseService.CreateNext(version, args[0])
 	if err != nil {
-		msgHandler.errorFatal(err)
+		msgHandler.error(err)
+		return
 	}
 
 	msgHandler.success("tag %s created", tag)

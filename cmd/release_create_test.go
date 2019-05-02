@@ -66,7 +66,7 @@ func TestReleaseCreate(t *testing.T) {
 				return releaseServiceMock{err: fmt.Errorf("failure occurred when creating release"), methodCallCount: map[string]int{}}
 			},
 			func(exitCode int, stdout bytes.Buffer, stderr bytes.Buffer, semverServiceMethodCallCount map[string]int, releaseServiceMethodCallCount map[string]int) {
-				assert.Equal(t, 1, exitCode)
+				assert.Equal(t, 0, exitCode)
 				assert.Equal(t, "failure occurred when creating release\n", stderr.String())
 				assert.Len(t, semverServiceMethodCallCount, 1)
 				assert.Equal(t, 1, semverServiceMethodCallCount["GetFromCommit"])
