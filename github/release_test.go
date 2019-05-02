@@ -277,7 +277,6 @@ func TestReleaseCreateNext(t *testing.T) {
 					JSON(
 						map[string]interface{}{
 							"tag_name":         "1.0.0",
-							"prerelease":       false,
 							"target_commitish": master,
 						},
 					).
@@ -358,7 +357,6 @@ func TestReleaseCreateNext(t *testing.T) {
 					JSON(
 						map[string]interface{}{
 							"tag_name":         "2.0.0",
-							"prerelease":       false,
 							"target_commitish": master,
 						},
 					).
@@ -435,7 +433,6 @@ func TestReleaseCreateNext(t *testing.T) {
 					JSON(
 						map[string]interface{}{
 							"tag_name":         "1.0.0",
-							"prerelease":       false,
 							"target_commitish": master,
 						},
 					).

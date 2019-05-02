@@ -83,7 +83,6 @@ func (r ReleaseService) CreateNext(version Version, targetCommitish string) (Tag
 
 	nextTag := getNextTag(lastTag, version)
 	tagStr := nextTag.String()
-	t := (nextTag.PreRelease != "")
 
 	if _, _, err = r.client.Repositories.CreateRelease(
 		context.Background(),
@@ -91,7 +90,6 @@ func (r ReleaseService) CreateNext(version Version, targetCommitish string) (Tag
 		r.repository,
 		&github.RepositoryRelease{
 			TagName:         &tagStr,
-			Prerelease:      &t,
 			TargetCommitish: &targetCommitish,
 		},
 	); err != nil {
