@@ -2,7 +2,10 @@ package github
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
+	"net/http"
 
 	"github.com/google/go-github/github"
 	"golang.org/x/oauth2"
@@ -40,19 +43,21 @@ type SemverLabelService struct {
 	owner      string
 	repository string
 	client     *github.Client
+	httpClient *http.Client
 }
 
 // NewSemverLabelService creates a new instance of SemverLabelService
 func NewSemverLabelService(owner string, repository string, token string) SemverLabelService {
+	client := oauth2.NewClient(
+		context.Background(),
+		oauth2.StaticTokenSource(&oauth2.Token{AccessToken: token}),
+	)
+
 	return SemverLabelService{
 		owner,
 		repository,
-		github.NewClient(
-			oauth2.NewClient(
-				context.Background(),
-				oauth2.StaticTokenSource(&oauth2.Token{AccessToken: token}),
-			),
-		),
+		github.NewClient(client),
+		client,
 	}
 }
 
@@ -82,20 +87,47 @@ func (s SemverLabelService) GetFromPullRequest(pullRequestNumber int) (Version, 
 // if the commit doesn't exist or multiple exist, it returns an error,
 // if there is none or more than one this function returns an error
 func (s SemverLabelService) GetFromCommit(commitSha string) (Version, error) {
-	results, _, err := s.client.Search.Issues(context.Background(), fmt.Sprintf("%s+repo:%s/%s", commitSha, s.owner, s.repository), nil)
+	type PullRequest struct {
+		Labels []github.Label
+	}
+
+	results := []PullRequest{}
+
+	req, err := http.NewRequest("GET", fmt.Sprintf("https://api.github.com/repos/%s/%s/commits/%s/pulls", s.owner, s.repository, commitSha), nil)
+	if err != nil {
+		return UNVALIDVERSION, fmt.Errorf("can't create github request : %s", err)
+	}
+
+	req.Header.Add("Accept", "application/vnd.github.groot-preview+json")
+
+	res, err := s.httpClient.Do(req)
 	if err != nil {
 		return UNVALIDVERSION, fmt.Errorf("can't fetch github api to get label from commit %s : %s", commitSha, err)
 	}
 
-	if len(results.Issues) == 0 {
-		return UNVALIDVERSION, fmt.Errorf("commit %s not found", commitSha)
-	} else if len(results.Issues) > 1 {
-		return UNVALIDVERSION, fmt.Errorf("several entries found for commit %s", commitSha)
+	if res.StatusCode != http.StatusOK {
+		return UNVALIDVERSION, fmt.Errorf("can't fetch github api to get label from commit %s : status code %d", commitSha, res.StatusCode)
 	}
 
-	version, err := extractSemverLabels(results.Issues[0].Labels)
+	body, err := ioutil.ReadAll(res.Body)
 	if err != nil {
-		return UNVALIDVERSION, fmt.Errorf("an error occurred when parsing version from commit %s : %s", commitSha, err)
+		return UNVALIDVERSION, fmt.Errorf("can't parse github response : %s", err)
+	}
+
+	err = json.Unmarshal(body, &results)
+	if err != nil {
+		return UNVALIDVERSION, fmt.Errorf("can't decode github json response : %s", err)
+	}
+
+	if len(results) == 0 {
+		return UNVALIDVERSION, fmt.Errorf("no pull request associated to commit %s", commitSha)
+	} else if len(results) > 1 {
+		return UNVALIDVERSION, fmt.Errorf("several entries found associated with commit %s", commitSha)
+	}
+
+	version, err := extractSemverLabels(results[0].Labels)
+	if err != nil {
+		return UNVALIDVERSION, fmt.Errorf("can't parse version from commit %s : %s", commitSha, err)
 	}
 
 	return version, nil
