@@ -25,10 +25,6 @@ func newMessageHandler() messageHandler {
 	return messageHandler{os.Exit, os.Stdout, os.Stderr}
 }
 
-func (m messageHandler) error(err error) {
-	failOnFprintError(color.New(color.FgRed).Fprint(m.stderrWriter, err.Error()+"\n"))
-}
-
 func (m messageHandler) errorFatal(err error) {
 	failOnFprintError(color.New(color.FgRed).Fprint(m.stderrWriter, err.Error()+"\n"))
 	m.exit(1)

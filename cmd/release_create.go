@@ -32,12 +32,11 @@ func releaseCreate(msgHandler messageHandler, semverService semverService, relea
 
 	version, err := semverService.GetFromCommit(args[0])
 	if err != nil {
-		msgHandler.error(err)
-		return
+		msgHandler.errorFatal(err)
 	}
 
 	if version == github.NORELEASE {
-		msgHandler.success("label norelease found, skip tag creation")
+		msgHandler.success("label norelease found or no pull request is attached to %s, skip tag creation", args[0])
 		return
 	}
 

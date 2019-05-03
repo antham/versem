@@ -34,7 +34,7 @@ You must define several environment variables : _GITHUB_OWNER_, _GITHUB_REPOSITO
 
 ### label check [commitSha|pullRequestId]
 
-Ensure a semver label is defined on a pull request or a commit that belong to a pull request, if not it exit with an error.
+Ensure a semver label is defined on a pull request or a commit that belong to a pull request, if not it exit with an error, if the commit is not tied to a pull request, it aborts without any errors.
 
 ### label create
 
@@ -42,7 +42,7 @@ Create semver labels (patch, minor, major) on a repository.
 
 ### release create [commitSha]
 
-Create the semver tag using label version defined in pull request tied to the commit given as argument, if the command fails, it exits with a 0 error code.
+Create the semver tag using label version defined in pull request tied to the commit given as argument, if the commit is not tied to a pull request, it aborts without any errors.
 
 ## Setup
 

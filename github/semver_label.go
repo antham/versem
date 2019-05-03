@@ -84,8 +84,9 @@ func (s SemverLabelService) GetFromPullRequest(pullRequestNumber int) (Version, 
 }
 
 // GetFromCommit find out version label attached to a commit,
-// if the commit doesn't exist or multiple exist, it returns an error,
-// if there is none or more than one this function returns an error
+// if the commit doesn't exist or multiple pull requests exist for this commit, it returns an error,
+// if there is more than one this function returns an error,
+// if the commit doesn't belong to a pull request it returns a NORELEASE version
 func (s SemverLabelService) GetFromCommit(commitSha string) (Version, error) {
 	type PullRequest struct {
 		Labels []github.Label
@@ -120,7 +121,7 @@ func (s SemverLabelService) GetFromCommit(commitSha string) (Version, error) {
 	}
 
 	if len(results) == 0 {
-		return UNVALIDVERSION, fmt.Errorf("no pull request associated to commit %s", commitSha)
+		return NORELEASE, nil
 	} else if len(results) > 1 {
 		return UNVALIDVERSION, fmt.Errorf("several entries found associated with commit %s", commitSha)
 	}

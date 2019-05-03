@@ -273,22 +273,6 @@ func TestSemverLabelServiceGetFromCommit(t *testing.T) {
 			},
 		},
 		{
-			"Pull request not found",
-			func() {
-				gock.New("https://api.github.com").
-					Get("/repos/antham/versem/commits/a6e6c8b8c34d2382e591587e960e7e7f825cb221/pulls").
-					MatchHeader("Accept", "application/vnd.github.groot.preview.json").
-					MatchHeader("Authorization", "Bearer 396531004112aa66a7fda31bfdca7d00").
-					Reply(200).
-					JSON(
-						[]map[string]interface{}{},
-					)
-			},
-			func(version Version, err error) {
-				assert.EqualError(t, err, "no pull request associated to commit a6e6c8b8c34d2382e591587e960e7e7f825cb221")
-			},
-		},
-		{
 			"Several pull requests found",
 			func() {
 				gock.New("https://api.github.com").
@@ -1673,6 +1657,23 @@ func TestSemverLabelServiceGetFromCommit(t *testing.T) {
 			},
 			func(version Version, err error) {
 				assert.EqualError(t, err, "can't parse version from commit a6e6c8b8c34d2382e591587e960e7e7f825cb221 : more than one semver label found")
+			},
+		},
+		{
+			"Pull request not found",
+			func() {
+				gock.New("https://api.github.com").
+					Get("/repos/antham/versem/commits/a6e6c8b8c34d2382e591587e960e7e7f825cb221/pulls").
+					MatchHeader("Accept", "application/vnd.github.groot.preview.json").
+					MatchHeader("Authorization", "Bearer 396531004112aa66a7fda31bfdca7d00").
+					Reply(200).
+					JSON(
+						[]map[string]interface{}{},
+					)
+			},
+			func(version Version, err error) {
+				assert.NoError(t, err)
+				assert.Equal(t, NORELEASE, version)
 			},
 		},
 		{

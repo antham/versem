@@ -40,7 +40,7 @@ func TestReleaseCreate(t *testing.T) {
 			},
 		},
 		{
-			"An error occurred when fetching label but exit code is 0",
+			"An error occurred when fetching label",
 			[]string{"8a5ed8235d18fb0243493b82baf5d988459d24db"},
 			func() semverService {
 				return semverServiceMock{err: fmt.Errorf("failure occurred when fetching label"), methodCallCount: map[string]int{}}
@@ -49,7 +49,7 @@ func TestReleaseCreate(t *testing.T) {
 				return releaseServiceMock{methodCallCount: map[string]int{}}
 			},
 			func(exitCode int, stdout bytes.Buffer, stderr bytes.Buffer, semverServiceMethodCallCount map[string]int, releaseServiceMethodCallCount map[string]int) {
-				assert.Equal(t, 0, exitCode)
+				assert.Equal(t, 1, exitCode)
 				assert.Equal(t, "failure occurred when fetching label\n", stderr.String())
 				assert.Len(t, semverServiceMethodCallCount, 1)
 				assert.Equal(t, 1, semverServiceMethodCallCount["GetFromCommit"])
@@ -103,7 +103,7 @@ func TestReleaseCreate(t *testing.T) {
 			},
 			func(exitCode int, stdout bytes.Buffer, stderr bytes.Buffer, semverServiceMethodCallCount map[string]int, releaseServiceMethodCallCount map[string]int) {
 				assert.Equal(t, 0, exitCode)
-				assert.Equal(t, "label norelease found, skip tag creation\n", stdout.String())
+				assert.Equal(t, "label norelease found or no pull request is attached to 8a5ed8235d18fb0243493b82baf5d988459d24db, skip tag creation\n", stdout.String())
 				assert.Len(t, semverServiceMethodCallCount, 1)
 				assert.Equal(t, 1, semverServiceMethodCallCount["GetFromCommit"])
 				assert.Len(t, releaseServiceMethodCallCount, 0)

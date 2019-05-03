@@ -95,6 +95,22 @@ func TestLabelCheck(t *testing.T) {
 				assert.Equal(t, 1, methodCallCount["GetFromPullRequest"])
 			},
 		},
+		{
+			"Fetch norelease version from pull request label",
+			func() semverService {
+				return semverServiceMock{methodCallCount: map[string]int{}, version: github.NORELEASE}
+			},
+			func() []string {
+				return []string{"8a5ed8235d18fb0243493b82baf5d988459d24db"}
+			},
+			func(exitCode int, stdout bytes.Buffer, stderr bytes.Buffer, methodCallCount map[string]int) {
+				assert.Equal(t, 0, exitCode)
+				assert.Empty(t, stderr.String())
+				assert.Equal(t, "norelease semver version found or commit 8a5ed8235d18fb0243493b82baf5d988459d24db is not tied to a pull request\n", stdout.String())
+				assert.Len(t, methodCallCount, 1)
+				assert.Equal(t, 1, methodCallCount["GetFromCommit"])
+			},
+		},
 	}
 
 	for _, scenario := range scenarios {

@@ -35,10 +35,14 @@ func labelCheck(msgHandler messageHandler, semverService semverService, cmd *cob
 
 	var version github.Version
 	var err error
+	var successMsg = "%s semver version found"
 
 	switch {
 	case regexp.MustCompile("[0-9a-f]{40}").MatchString(args[0]):
 		version, err = semverService.GetFromCommit(args[0])
+		if version == github.NORELEASE {
+			successMsg += fmt.Sprintf(" or commit %s is not tied to a pull request", args[0])
+		}
 	case regexp.MustCompile("[0-9]+").MatchString(args[0]):
 		n, _ := strconv.Atoi(args[0])
 		version, err = semverService.GetFromPullRequest(n)
@@ -50,5 +54,5 @@ func labelCheck(msgHandler messageHandler, semverService semverService, cmd *cob
 		msgHandler.errorFatal(err)
 	}
 
-	msgHandler.success("%s semver version found", strings.ToLower(version.String()))
+	msgHandler.success(successMsg, strings.ToLower(version.String()))
 }
