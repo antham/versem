@@ -5,6 +5,7 @@ Versem creates a semver git tag and a github release when merging a pull request
 ---
 
 - [Usage](#usage)
+- [Documentation](#documentation)
 - [Setup](#setup)
 - [Contribute](#contribute)
 
@@ -38,11 +39,41 @@ Ensure a semver label is defined on a pull request or a commit that belong to a 
 
 ### label create
 
-Create semver labels (patch, minor, major) on a repository.
+Create labels (patch, minor, major and norelease) on a repository.
 
 ### release create [commitSha]
 
 Create the semver tag using label version defined in pull request tied to the commit given as argument, if the commit is not tied to a pull request, it aborts without any errors.
+
+## Documentation
+
+### Workflow
+
+You will use the command `versem label create` to add semver labels to your repository manually.
+
+You will use the command `versem label check [pullRequestId]` in your CI to ensure a version label is linked to a pull request, when a pull request is built.
+
+When the pull request is merged, you will use the command `versem release create` in your CI to create the release according to the version label defined in the pull request and according to the previous semver tag created.
+
+Have a look to [versem-circleci](https://github.com/antham/versem-circleci) to have a full example of how to use it in a CI.
+
+### Recommended settings
+
+You should force in a CI, a check to ensure every pull request are labelled properly like in the example above.
+
+You should enable this setting in your github repository : `Require branches to be up to date before merging`, to be sure 2 pull requests are not merged in the same time and avoiding release creation mess.
+
+### Label norelease
+
+When your pull request is not intended to produce a new semver tag, it must be labelled with `norelease`, the CI will pass and will not produce any new release on merge.
+
+### V version suffix
+
+If you started to prefix your semver tag with a `v`, versem will automatically detect it and will create new versions following this convention.
+
+### Repository not following semver before
+
+If you want to install versem on a repository that wasn't following semver convention before, you must first create a proper semver tag manually before settting it, to let versem be able to understand from where it should start to tag.
 
 ## Setup
 
@@ -50,7 +81,7 @@ Download the binary from the release page according to your architecture : https
 
 ## Contribute
 
-If you want to add a new feature to chyle project, the best way is to open a ticket first to know exactly how to implement your changes in code.
+If you want to add a new feature to versem project, the best way is to open a ticket first to know exactly how to implement your changes in code.
 
 ### Setup
 
