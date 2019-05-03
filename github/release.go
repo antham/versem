@@ -72,7 +72,7 @@ func (r ReleaseService) CreateNext(version Version, targetCommitish string) (Tag
 		return Tag{}, fmt.Errorf("can't fetch latest tag : %s", err)
 	}
 
-	lastTag := Tag{}
+	lastTag := Tag{LeadingV: true}
 
 	if len(tags) > 0 {
 		lastTag, err = NewTagFromString(tags[0].GetName())

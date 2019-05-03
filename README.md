@@ -67,9 +67,11 @@ You should enable this setting in your github repository : `Require branches to 
 
 When your pull request is not intended to produce a new semver tag, it must be labelled with `norelease`, the CI will pass and will not produce any new release on merge.
 
-### V version suffix
+### V version suffix or not
 
-If you started to prefix your semver tag with a `v`, versem will automatically detect it and will create new versions following this convention.
+If you started to prefix your semver tag with a `v`, versem will automatically detect it and will create new versions following this convention, if not it will continue not adding ```v``` as a suffix.
+
+When no tag exist yet, a ```v``` is added for the first tag created.
 
 ### Repository not following semver before
 

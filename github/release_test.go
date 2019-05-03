@@ -276,7 +276,7 @@ func TestReleaseCreateNext(t *testing.T) {
 					MatchType("json").
 					JSON(
 						map[string]interface{}{
-							"tag_name":         "1.0.0",
+							"tag_name":         "v1.0.0",
 							"target_commitish": master,
 						},
 					).
@@ -432,7 +432,7 @@ func TestReleaseCreateNext(t *testing.T) {
 					MatchType("json").
 					JSON(
 						map[string]interface{}{
-							"tag_name":         "1.0.0",
+							"tag_name":         "v1.0.0",
 							"target_commitish": master,
 						},
 					).
@@ -441,16 +441,16 @@ func TestReleaseCreateNext(t *testing.T) {
 					JSON(
 						map[string]interface{}{
 							"url":              "https://api.github.com/repos/antham/versem/releases/1",
-							"html_url":         "https://github.com/antham/versem/releases/1.0.0",
+							"html_url":         "https://github.com/antham/versem/releases/v1.0.0",
 							"assets_url":       "https://api.github.com/repos/antham/versem/releases/1/assets",
 							"upload_url":       "https://uploads.github.com/repos/antham/versem/releases/1/assets{?name,label}",
-							"tarball_url":      "https://api.github.com/repos/antham/versem/tarball/1.0.0",
-							"zipball_url":      "https://api.github.com/repos/antham/versem/zipball/1.0.0",
+							"tarball_url":      "https://api.github.com/repos/antham/versem/tarball/v1.0.0",
+							"zipball_url":      "https://api.github.com/repos/antham/versem/zipball/v1.0.0",
 							"id":               1,
 							"node_id":          "MDc6UmVsZWFzZTE=",
-							"tag_name":         "1.0.0",
+							"tag_name":         "v1.0.0",
 							"target_commitish": master,
-							"name":             "1.0.0",
+							"name":             "v1.0.0",
 							"body":             "Description of the release",
 							"draft":            false,
 							"prerelease":       false,
@@ -484,7 +484,7 @@ func TestReleaseCreateNext(t *testing.T) {
 			},
 			func(tag Tag, err error) {
 				assert.NoError(t, err)
-				assert.Equal(t, Tag{Major: 1}, tag)
+				assert.Equal(t, Tag{LeadingV: true, Major: 1}, tag)
 			},
 		},
 	}
