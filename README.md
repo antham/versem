@@ -75,7 +75,7 @@ When no tag exist yet, a ```v``` is added for the first tag created.
 
 ### Repository not following semver before
 
-If you want to install versem on a repository that wasn't following semver convention before, you must first create a proper semver tag manually before settting it, to let versem be able to understand from where it should start to tag.
+If you want to install versem on a repository that wasn't following semver convention before, you must first create a proper semver tag manually before settting it, to let versem be able to understand from where it should start to tag. You must be really careful with the order of tags and check your semver tag appears as the last one otherwise versem won't work properly.
 
 ## Setup
 
