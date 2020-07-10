@@ -254,7 +254,7 @@ func TestSemverLabelServiceGetFromCommit(t *testing.T) {
 					ReplyError(fmt.Errorf("an error occurred"))
 			},
 			func(version Version, err error) {
-				assert.EqualError(t, err, "can't fetch github api to get label from commit a6e6c8b8c34d2382e591587e960e7e7f825cb221 : Get https://api.github.com/repos/antham/versem/commits/a6e6c8b8c34d2382e591587e960e7e7f825cb221/pulls: an error occurred")
+				assert.EqualError(t, err, `can't fetch github api to get label from commit a6e6c8b8c34d2382e591587e960e7e7f825cb221 : Get "https://api.github.com/repos/antham/versem/commits/a6e6c8b8c34d2382e591587e960e7e7f825cb221/pulls": an error occurred`)
 			},
 		},
 		{
