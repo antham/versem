@@ -1,5 +1,5 @@
 compile:
-	gox -output "build/{{.Dir}}_{{.OS}}_{{.Arch}}"
+	gox -osarch "linux/amd64 darwin/amd64 windows/amd64" -output "build/{{.Dir}}_{{.OS}}_{{.Arch}}"
 
 fmt:
 	find ! -path "./vendor/*" -name "*.go" -exec gofmt -s -w {} \;
