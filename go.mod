@@ -12,6 +12,7 @@ require (
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect
 	github.com/spf13/viper v1.7.1
 	github.com/stretchr/testify v1.7.0
+	golang.org/x/net v0.0.0-20191021144547-ec77196f6094 // indirect
 	golang.org/x/oauth2 v0.0.0-20190604053449-0f29369cfe45
-	gopkg.in/h2non/gock.v1 v1.0.16
+	gopkg.in/h2non/gock.v1 v1.1.0
 )
