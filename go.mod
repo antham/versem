@@ -3,7 +3,7 @@ module github.com/antham/versem
 go 1.12
 
 require (
-	github.com/fatih/color v1.12.0
+	github.com/fatih/color v1.13.0
 	github.com/google/go-github v17.0.0+incompatible
 	github.com/google/go-querystring v1.0.0 // indirect
 	github.com/spf13/cobra v0.0.7
