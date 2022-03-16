@@ -8,7 +8,7 @@ require (
 	github.com/google/go-querystring v1.0.0 // indirect
 	github.com/spf13/cobra v1.3.0
 	github.com/spf13/viper v1.10.1
-	github.com/stretchr/testify v1.7.0
+	github.com/stretchr/testify v1.7.1
 	golang.org/x/oauth2 v0.0.0-20211104180415-d3ed0bb246c8
 	gopkg.in/h2non/gock.v1 v1.1.2
 )
