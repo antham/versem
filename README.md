@@ -1,4 +1,4 @@
-# Versem [![CircleCI](https://circleci.com/gh/antham/versem/tree/master.svg?style=svg)](https://circleci.com/gh/antham/versem/tree/master) [![codecov](https://codecov.io/gh/antham/versem/branch/master/graph/badge.svg)](https://codecov.io/gh/antham/versem) [![Go Report Card](https://goreportcard.com/badge/github.com/antham/versem)](https://goreportcard.com/report/github.com/antham/versem) [![GoDoc](https://godoc.org/github.com/antham/versem?status.svg)](http://godoc.org/github.com/antham/versem) [![GitHub tag](https://img.shields.io/github/tag/antham/versem.svg)]()
+# Versem [![codecov](https://codecov.io/gh/antham/versem/branch/master/graph/badge.svg)](https://codecov.io/gh/antham/versem) [![Go Report Card](https://goreportcard.com/badge/github.com/antham/versem)](https://goreportcard.com/report/github.com/antham/versem) [![GitHub tag](https://img.shields.io/github/tag/antham/versem.svg)]()
 
 Versem creates a semver git tag and a github release when merging a pull request according to the version label set on the repository.
 
@@ -69,9 +69,9 @@ When your pull request is not intended to produce a new semver tag, it must be l
 
 ### V version suffix or not
 
-If you started to prefix your semver tag with a `v`, versem will automatically detect it and will create new versions following this convention, if not it will continue not adding ```v``` as a suffix.
+If you started to prefix your semver tag with a `v`, versem will automatically detect it and will create new versions following this convention, if not it will continue not adding `v` as a suffix.
 
-When no tag exist yet, a ```v``` is added for the first tag created.
+When no tag exist yet, a `v` is added for the first tag created.
 
 ### Repository not following semver before
 
