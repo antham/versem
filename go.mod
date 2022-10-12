@@ -6,7 +6,7 @@ require (
 	github.com/fatih/color v1.13.0
 	github.com/google/go-github v17.0.0+incompatible
 	github.com/google/go-querystring v1.1.0 // indirect
-	github.com/spf13/cobra v1.5.0
+	github.com/spf13/cobra v1.6.0
 	github.com/spf13/viper v1.13.0
 	github.com/stretchr/testify v1.8.0
 	golang.org/x/oauth2 v0.0.0-20220411215720-9780585627b5
