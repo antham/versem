@@ -163,6 +163,8 @@ func (s SemverLabelService) CreateList() error {
 			"Produce a new semver major version when pull request is merged on master",
 		},
 	} {
+		label := label
+
 		if _, _, err := s.client.Issues.CreateLabel(context.Background(), s.owner, s.repository, &github.Label{
 			Name:        &label.name,
 			Color:       &label.color,
