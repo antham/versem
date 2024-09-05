@@ -4,7 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 
 	"github.com/google/go-github/github"
@@ -110,7 +110,7 @@ func (s SemverLabelService) GetFromCommit(commitSha string) (Version, error) {
 		return UNVALIDVERSION, fmt.Errorf("can't fetch github api to get label from commit %s : status code %d", commitSha, res.StatusCode)
 	}
 
-	body, err := ioutil.ReadAll(res.Body)
+	body, err := io.ReadAll(res.Body)
 	if err != nil {
 		return UNVALIDVERSION, fmt.Errorf("can't parse github response : %s", err)
 	}
