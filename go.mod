@@ -7,7 +7,7 @@ require (
 	github.com/fatih/color v1.18.0
 	github.com/google/go-github v17.0.0+incompatible
 	github.com/spf13/cobra v1.9.1
-	github.com/spf13/viper v1.20.0
+	github.com/spf13/viper v1.20.1
 	github.com/stretchr/testify v1.10.0
 	golang.org/x/oauth2 v0.26.0
 	gopkg.in/h2non/gock.v1 v1.1.2
