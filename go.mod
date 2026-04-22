@@ -1,8 +1,6 @@
 module github.com/antham/versem
 
-go 1.23.0
-
-toolchain go1.24.1
+go 1.25.0
 
 require (
 	github.com/fatih/color v1.18.0
@@ -10,7 +8,7 @@ require (
 	github.com/spf13/cobra v1.9.1
 	github.com/spf13/viper v1.20.1
 	github.com/stretchr/testify v1.10.0
-	golang.org/x/oauth2 v0.30.0
+	golang.org/x/oauth2 v0.36.0
 	gopkg.in/h2non/gock.v1 v1.1.2
 )
 
